@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin">
+<title>Lurra: free land report for rural plots in Spain and beyond</title>
+<meta name="description" content="Enter a Spanish cadastral reference, click a parcel on the map or draw any plot in the world: flood zones, Natura 2000, slope, land use and satellite history in a minute. Free, no sign-up.">
+<link rel="alternate" hreflang="en" href="./">
+<link rel="alternate" hreflang="es" href="../">
+<link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="../estilo.css">
+<script src="../config.js"></script>
+</head>
+<body>
+<a class="salto" href="#herramienta">Skip to the parcel finder</a>
+
+<header class="cabecera">
+  <a class="marca" href="./" aria-label="Lurra, home">Lurra</a>
+  <nav class="plegable" aria-label="Sections">
+    <a href="#contenido">What you get</a>
+    <a href="#como">How it works</a>
+    <a href="#limites">Limits</a>
+    <a href="../" lang="es" hreflang="es">Español</a>
+  </nav>
+</header>
+
+<main>
+<section class="portada">
+  <div class="portada__texto">
+    <h1>Before you buy rural land, look at what lies beneath the listing.</h1>
+    <p class="entrada">Enter the Spanish cadastral reference, click the parcel on the map or draw any plot. In a minute you see what official maps and satellites say about it: whether it floods, whether it is protected, how steep it is and what has happened to it since 2017.</p>
+    <p class="portada__sello">Free, no sign-up. Full report for Spain; basic report worldwide.</p>
+  </div>
+
+  <div class="herramienta" id="herramienta">
+    <div class="pestanas" role="tablist" aria-label="How to select the land">
+      <button type="button" role="tab" id="pestana-ref" data-pestana="ref" aria-selected="true" aria-controls="panel-ref">Cadastral reference</button>
+      <button type="button" role="tab" id="pestana-clic" data-pestana="clic" aria-selected="false" aria-controls="panel-mapa" tabindex="-1">Find on the map</button>
+      <button type="button" role="tab" id="pestana-dibujo" data-pestana="dibujo" aria-selected="false" aria-controls="panel-mapa" tabindex="-1">Draw a plot</button>
+    </div>
+
+    <div id="panel-ref" role="tabpanel" aria-labelledby="pestana-ref">
+      <form id="form-ref" novalidate>
+        <label for="ref">Spanish cadastral reference</label>
+        <div class="fila-campo">
+          <input id="ref" name="ref" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="39014A01800003" aria-describedby="ref-ayuda ref-error" required>
+          <button class="boton" id="ref-boton" type="submit">See the report</button>
+        </div>
+        <p id="ref-ayuda" class="ayuda">14 or 20 letters and digits. You will find it on the property tax (IBI) receipt, on the deed and on the Catastro website. Don't have it? Find the land on the map.</p>
+        <p id="ref-estado" class="estado" role="status" hidden></p>
+        <p id="ref-error" class="error" role="alert" hidden></p>
+      </form>
+    </div>
+
+    <div id="panel-mapa" role="tabpanel" aria-labelledby="pestana-clic" hidden>
+      <form id="form-lugar" class="fila-campo" role="search">
+        <label class="oculto" for="lugar">Search for a place or a cadastral reference</label>
+        <input id="lugar" type="search" placeholder="Town, place name or cadastral reference">
+        <button class="boton boton--secundario" type="submit">Search</button>
+      </form>
+      <ul id="lugar-resultados" class="resultados"></ul>
+      <p id="mapa-ayuda" class="ayuda"></p>
+      <div id="mapa" class="mapa-vivo" aria-label="Map to choose the parcel"></div>
+      <div class="mapa-controles">
+        <fieldset>
+          <legend class="oculto">Map background</legend>
+          <label><input type="radio" name="fondo" value="orto" checked> Aerial photo (Spain)</label>
+          <label><input type="radio" name="fondo" value="satelite"> Satellite (world)</label>
+          <label><input type="radio" name="fondo" value="mapa"> Map</label>
+          <label><input type="checkbox" id="capa-catastro" checked> Cadastral parcels</label>
+        </fieldset>
+        <div id="herramientas-dibujo" class="botones" hidden>
+          <button type="button" class="boton boton--secundario boton--pequeno" id="dib-terminar" disabled>Finish</button>
+          <button type="button" class="boton boton--secundario boton--pequeno" id="dib-deshacer" disabled>Undo point</button>
+          <button type="button" class="boton boton--secundario boton--pequeno" id="dib-borrar">Clear</button>
+          <label class="boton boton--secundario boton--pequeno subir">Upload GeoJSON or KML<input type="file" id="dib-fichero" accept=".geojson,.json,.kml,application/geo+json,application/vnd.google-earth.kml+xml"></label>
+        </div>
+      </div>
+      <p id="mapa-seleccion" class="estado" role="status" hidden></p>
+      <p id="mapa-error" class="error" role="alert" hidden></p>
+      <button type="button" class="boton" id="mapa-usar" hidden>See the report for this plot</button>
+    </div>
+  </div>
+</section>
+
+<section id="zona-informe" class="zona-informe" hidden>
+  <div id="progreso" class="progreso" role="status" hidden>
+    <p class="progreso__titulo">Preparing the report…</p>
+    <ul id="progreso-pasos" class="pasos"></ul>
+  </div>
+  <p id="informe-error" class="error error--bloque" role="alert" hidden></p>
+  <div id="acciones" class="acciones" hidden>
+    <button type="button" class="boton" id="acc-imprimir">Save as PDF or print</button>
+    <button type="button" class="boton boton--secundario" id="acc-enlace">Copy link to this report</button>
+    <button type="button" class="boton boton--secundario" id="acc-json">Download the data (JSON)</button>
+    <button type="button" class="boton boton--secundario" id="acc-otro">Make another report</button>
+  </div>
+  <p id="informe-listo" class="oculto" role="status"></p>
+  <div id="sat-control" class="sat-control" hidden></div>
+  <div id="informe"></div>
+</section>
+
+<section id="contenido" class="bloque">
+  <h2>What the report contains</h2>
+  <p class="bloque__entrada">Seven sections, in the order you should read them. Every figure carries its official source and date.</p>
+  <ol class="apartados">
+    <li><h3>Cadastral record</h3><p>Area, use, crops by sub-parcel, and the cadastral area compared with the area measured on the outline.</p></li>
+    <li><h3>Terrain</h3><p>Elevation, mean and maximum slope, share of the land steeper than 20 % and aspect. In Spain, from the 5 m national terrain model.</p></li>
+    <li><h3>Water</h3><p>Area of the land inside the 10, 100 and 500-year flood zones, river and coastal, according to Spain's official mapping.</p></li>
+    <li><h3>Environmental protection</h3><p>Natura 2000 sites and protected natural areas that touch the land, with their name, code and the area affected.</p></li>
+    <li><h3>Land use</h3><p>SIGPAC land-use units in Spain; a 10 m global land-cover map elsewhere.</p></li>
+    <li><h3>Satellite history</h3><p>Vegetation vigour month by month since 2017 from Sentinel-2, and the sharp drops that point to felling, fire or building work.</p></li>
+    <li><h3>Summary and questions</h3><p>A traffic-light summary and the list of questions to take to the town council, the land registry and the seller.</p></li>
+  </ol>
+</section>
+
+<section id="como" class="bloque bloque--franja">
+  <h2>How it works</h2>
+  <div class="tres">
+    <div>
+      <h3>Official data, queried on the spot</h3>
+      <p>The report is built the moment you ask for it, from the public services of Spain's Catastro, SIGPAC, the Ministry for the Ecological Transition and the National Geographic Institute, plus the Copernicus programme. No stale copies.</p>
+    </div>
+    <div>
+      <h3>Computed in your browser</h3>
+      <p>Your browser queries those services directly and does the maths. There is no sign-up, and Lurra neither receives nor stores the reference you look up.</p>
+    </div>
+    <div>
+      <h3>All of Spain, and a basic report elsewhere</h3>
+      <p>It works with any parcel in the Spanish cadastre and, with a click on the map, in the Basque Country and Navarre too. Draw a plot in another country and you get terrain, land cover, satellite history and, inside the European Union, Natura 2000.</p>
+    </div>
+  </div>
+</section>
+
+<section id="limites" class="bloque">
+  <h2>What this report is not</h2>
+  <div class="dos">
+    <p>It does not tell you whether you can build: that depends on each municipality's plan and you must ask the town council. It is not a valuation or a land survey either, and it does not replace a land registry extract.</p>
+    <p>It is the step before: in a few minutes you know whether the land has an obvious problem and what to ask before paying a deposit or hiring a professional. The result is informative and non-binding.</p>
+  </div>
+</section>
+
+<section id="preguntas" class="bloque bloque--franja">
+  <h2>Frequently asked questions</h2>
+  <div class="faq">
+    <details><summary>Where do I find the cadastral reference?</summary><p>On the property tax (IBI) receipt, on the deed and on the registry extract. If you don't have it, open “Find on the map”, zoom in on the land and click it: the outline comes from the Catastro or from SIGPAC.</p></details>
+    <details><summary>How much does it cost?</summary><p>Nothing. The service is in a trial phase and reports are free and unlimited.</p></details>
+    <details><summary>Does it work outside Spain?</summary><p>Yes, with fewer layers. Draw the plot or upload a GeoJSON or KML file: you get terrain, land cover and the satellite history anywhere in the world, plus Natura 2000 sites inside the European Union. Flood mapping and cadastral data are only available for Spain.</p></details>
+    <details><summary>If the report says “not in a flood zone”, am I safe?</summary><p>Not entirely. The official mapping only covers the river reaches that have been studied. “No” means no mapped flooding over the parcel, not zero risk. When in doubt, ask the river basin authority.</p></details>
+    <details><summary>Why does the satellite part take longer?</summary><p>Because your browser reads, month by month, the piece of each Sentinel-2 image that covers the land: between 80 and 200 MB in total, depending on the area, in one or two minutes. The rest of the report appears in seconds, and you can stop the reading at any time: it starts with the most recent years.</p></details>
+    <details><summary>Can I keep the report?</summary><p>Yes: “Save as PDF or print” makes your browser produce the PDF. You can also copy the link to generate it again, or download the data.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="pie">
+  <p><span data-dato="marca">Lurra</span>. Informative, non-binding reports built from public data of Spain's Catastro, FEGA (SIGPAC), MITECO and IGN, and the Copernicus programme.</p>
+  <p><a href="../aviso-legal.html" hreflang="es">Legal notice (in Spanish)</a> <a href="../privacidad.html" hreflang="es">Privacy</a> <a href="../condiciones.html" hreflang="es">Terms</a></p>
+</footer>
+
+<script src="../vendor/leaflet/leaflet.js"></script>
+<script src="../vendor/geotiff/geotiff.js"></script>
+<script type="module" src="../js/app.js"></script>
+<script src="../web.js"></script>
+</body>
+</html>
