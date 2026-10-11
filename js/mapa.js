@@ -48,17 +48,25 @@ export function crearMapa(el, { L, alClic, alDibujar, alCambiar }) {
     return true;
   }
 
+  // Un doble clic acerca el mapa: no debe contar además como «elegir esta parcela». Por eso
+  // el clic sencillo espera un instante por si llega el segundo.
+  let relojClic = null;
   mapa.on("click", (ev) => {
     const { lng, lat } = ev.latlng.wrap(); // longitud siempre entre −180 y 180
     if (modo === "dibujo") {
       if (cerrado) return;
+      const ultimo = vertices[vertices.length - 1];
+      if (ultimo && Math.abs(ultimo[0] - lng) < 1e-7 && Math.abs(ultimo[1] - lat) < 1e-7) return; // doble clic en el mismo punto
+      if (!vertices.length) seleccion.clearLayers(); // al empezar a dibujar se quita la parcela elegida antes
       vertices.push([lng, lat]);
       pintarTrazo();
       cambio();
     } else if (alClic) {
-      alClic(lng, lat, mapa.getZoom());
+      clearTimeout(relojClic);
+      relojClic = setTimeout(() => alClic(lng, lat, mapa.getZoom()), 280);
     }
   });
+  mapa.on("dblclick", () => clearTimeout(relojClic));
   mapa.on("zoomend", cambio);
 
   return {
@@ -66,6 +74,9 @@ export function crearMapa(el, { L, alClic, alDibujar, alCambiar }) {
     ajustar: () => mapa.invalidateSize(),
     modo: (m) => {
       modo = m;
+      clearTimeout(relojClic);
+      // Dibujando, el doble clic no acerca el mapa: sería fácil moverlo sin querer.
+      if (m === "dibujo") mapa.doubleClickZoom.disable(); else mapa.doubleClickZoom.enable();
       el.classList.toggle("mapa--dibujo", m === "dibujo");
       cambio();
     },
