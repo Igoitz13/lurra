@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin">
+<title>Lurra: informe gratuito de una finca rústica por su referencia catastral</title>
+<meta name="description" content="Escribe la referencia catastral o señala la parcela en el mapa y mira al momento si es inundable, si está en Red Natura 2000, su pendiente, su uso SIGPAC y su historia por satélite. Gratis y sin registro.">
+<link rel="alternate" hreflang="en" href="en/">
+<link rel="alternate" hreflang="es" href="./">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="estilo.css">
+<script src="config.js"></script>
+</head>
+<body>
+<a class="salto" href="#herramienta">Ir al buscador de parcelas</a>
+
+<header class="cabecera">
+  <a class="marca" href="./" aria-label="Lurra, inicio">Lurra</a>
+  <nav class="plegable" aria-label="Secciones">
+    <a href="#contenido">Qué incluye</a>
+    <a href="#como">Cómo funciona</a>
+    <a href="#limites">Límites</a>
+    <a href="guia/">Guías</a>
+    <a href="en/" lang="en" hreflang="en">English</a>
+  </nav>
+</header>
+
+<main>
+<section class="portada">
+  <div class="portada__texto">
+    <h1>Antes de comprar una finca rústica, mira qué hay debajo del anuncio.</h1>
+    <p class="entrada">Escribe la referencia catastral o señala la parcela en el mapa. En un minuto ves lo que los mapas oficiales y el satélite dicen de ella: si se inunda, si está protegida, cuánta pendiente tiene y qué le ha pasado desde 2017.</p>
+    <p class="portada__sello">Gratis, sin registro y para toda España.</p>
+  </div>
+
+  <div class="herramienta" id="herramienta">
+    <div class="pestanas" role="tablist" aria-label="Cómo quieres indicar la finca">
+      <button type="button" role="tab" id="pestana-ref" data-pestana="ref" aria-selected="true" aria-controls="panel-ref">Referencia catastral</button>
+      <button type="button" role="tab" id="pestana-clic" data-pestana="clic" aria-selected="false" aria-controls="panel-mapa" tabindex="-1">Buscar en el mapa</button>
+      <button type="button" role="tab" id="pestana-dibujo" data-pestana="dibujo" aria-selected="false" aria-controls="panel-mapa" tabindex="-1">Dibujar el recinto</button>
+    </div>
+
+    <div id="panel-ref" role="tabpanel" aria-labelledby="pestana-ref">
+      <form id="form-ref" novalidate>
+        <label for="ref">Referencia catastral</label>
+        <div class="fila-campo">
+          <input id="ref" name="ref" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="39014A01800003" aria-describedby="ref-ayuda ref-error" required>
+          <button class="boton" id="ref-boton" type="submit">Ver el informe</button>
+        </div>
+        <p id="ref-ayuda" class="ayuda">14 o 20 letras y números. Está en el recibo del IBI, en la escritura y en la Sede Electrónica del Catastro. ¿No la tienes? Busca la finca en el mapa.</p>
+        <p id="ref-estado" class="estado" role="status" hidden></p>
+        <p id="ref-error" class="error" role="alert" hidden></p>
+      </form>
+    </div>
+
+    <div id="panel-mapa" role="tabpanel" aria-labelledby="pestana-clic" hidden>
+      <form id="form-lugar" class="fila-campo" role="search">
+        <label class="oculto" for="lugar">Buscar un lugar o una referencia catastral</label>
+        <input id="lugar" type="search" placeholder="Municipio, paraje o referencia catastral">
+        <button class="boton boton--secundario" type="submit">Buscar</button>
+      </form>
+      <ul id="lugar-resultados" class="resultados"></ul>
+      <p id="mapa-ayuda" class="ayuda"></p>
+      <div id="mapa" class="mapa-vivo" aria-label="Mapa para elegir la parcela"></div>
+      <div class="mapa-controles">
+        <fieldset>
+          <legend class="oculto">Fondo del mapa</legend>
+          <label><input type="radio" name="fondo" value="orto" checked> Ortofoto (España)</label>
+          <label><input type="radio" name="fondo" value="satelite"> Satélite (mundo)</label>
+          <label><input type="radio" name="fondo" value="mapa"> Mapa</label>
+          <label><input type="checkbox" id="capa-catastro" checked> Parcelas del Catastro</label>
+        </fieldset>
+        <div id="herramientas-dibujo" class="botones" hidden>
+          <button type="button" class="boton boton--secundario boton--pequeno" id="dib-terminar" disabled>Terminar</button>
+          <button type="button" class="boton boton--secundario boton--pequeno" id="dib-deshacer" disabled>Deshacer punto</button>
+          <button type="button" class="boton boton--secundario boton--pequeno" id="dib-borrar">Borrar</button>
+          <label class="boton boton--secundario boton--pequeno subir">Subir GeoJSON o KML<input type="file" id="dib-fichero" accept=".geojson,.json,.kml,application/geo+json,application/vnd.google-earth.kml+xml"></label>
+        </div>
+      </div>
+      <p id="mapa-seleccion" class="estado" role="status" hidden></p>
+      <p id="mapa-error" class="error" role="alert" hidden></p>
+      <button type="button" class="boton" id="mapa-usar" hidden>Ver el informe de este recinto</button>
+    </div>
+  </div>
+</section>
+
+<section id="zona-informe" class="zona-informe" hidden>
+  <div id="progreso" class="progreso" role="status" hidden>
+    <p class="progreso__titulo">Preparando el informe…</p>
+    <ul id="progreso-pasos" class="pasos"></ul>
+  </div>
+  <p id="informe-error" class="error error--bloque" role="alert" hidden></p>
+  <div id="acciones" class="acciones" hidden>
+    <button type="button" class="boton" id="acc-imprimir">Guardar en PDF o imprimir</button>
+    <button type="button" class="boton boton--secundario" id="acc-enlace">Copiar enlace a este informe</button>
+    <button type="button" class="boton boton--secundario" id="acc-json">Descargar los datos (JSON)</button>
+    <button type="button" class="boton boton--secundario" id="acc-otro">Hacer otro informe</button>
+  </div>
+  <p id="informe-listo" class="oculto" role="status"></p>
+  <div id="sat-control" class="sat-control" hidden></div>
+  <div id="informe"></div>
+</section>
+
+<section id="contenido" class="bloque">
+  <h2>Qué incluye el informe</h2>
+  <p class="bloque__entrada">Siete apartados, en el orden en que conviene leerlos. Cada dato lleva su fuente oficial y su fecha.</p>
+  <ol class="apartados">
+    <li><h3>Ficha catastral</h3><p>Superficie, uso, cultivos por subparcela y comparación entre la superficie catastral y la medida sobre el recinto.</p></li>
+    <li><h3>Relieve</h3><p>Altitud, pendiente media y máxima, parte de la finca con más del 20 % de pendiente y orientación, con el modelo del terreno de 5 m del IGN.</p></li>
+    <li><h3>Agua</h3><p>Superficie de la finca dentro de las zonas inundables a 10, 100 y 500 años, por ríos y por el mar, según la cartografía oficial.</p></li>
+    <li><h3>Protección ambiental</h3><p>Red Natura 2000 y espacios naturales protegidos que tocan la finca, con su nombre, su código y los metros afectados.</p></li>
+    <li><h3>Uso del suelo</h3><p>Recintos SIGPAC de la parcela: uso reconocido, pendiente y regadío.</p></li>
+    <li><h3>Historia por satélite</h3><p>Vigor de la vegetación mes a mes desde 2017 con Sentinel-2, y las caídas bruscas que apuntan a talas, incendios u obras.</p></li>
+    <li><h3>Resumen y preguntas</h3><p>Un semáforo de atención y la lista de preguntas que llevar al ayuntamiento, al registro y al vendedor.</p></li>
+  </ol>
+</section>
+
+<section id="como" class="bloque bloque--franja">
+  <h2>Cómo funciona</h2>
+  <div class="tres">
+    <div>
+      <h3>Datos oficiales, consultados al momento</h3>
+      <p>El informe se hace en el instante en que lo pides, con los servicios públicos del Catastro, el SIGPAC, el Ministerio para la Transición Ecológica, el IGN y el programa Copernicus. No hay copias atrasadas.</p>
+    </div>
+    <div>
+      <h3>Se calcula en tu navegador</h3>
+      <p>Tu navegador pregunta directamente a esos servicios y hace los cálculos. No tienes que registrarte, y Lurra no recibe ni guarda la referencia que consultas.</p>
+    </div>
+    <div>
+      <h3>Toda España, y un informe básico fuera</h3>
+      <p>Funciona con cualquier parcela del Catastro y, con un clic en el mapa, también en el País Vasco y Navarra. Si dibujas un recinto en otro país tendrás relieve, cobertura del suelo, satélite y, en la Unión Europea, Red Natura 2000.</p>
+    </div>
+  </div>
+</section>
+
+<section id="limites" class="bloque">
+  <h2>Lo que este informe no es</h2>
+  <div class="dos">
+    <p>No dice si se puede construir: eso depende del planeamiento de cada municipio y hay que pedirlo al ayuntamiento. Tampoco es una tasación ni una medición topográfica, y no sustituye a la nota simple del Registro.</p>
+    <p>Es el paso previo: en unos minutos sabes si la finca tiene un problema evidente y qué preguntar antes de pagar una señal o encargar un estudio a un técnico. El resultado es informativo y no vinculante.</p>
+  </div>
+</section>
+
+<section id="preguntas" class="bloque bloque--franja">
+  <h2>Preguntas frecuentes</h2>
+  <div class="faq">
+    <details><summary>¿Dónde encuentro la referencia catastral?</summary><p>En el recibo del IBI, en la escritura y en la nota simple. Si no la tienes, abre la pestaña «Buscar en el mapa», acércate a la finca y haz clic sobre ella: el contorno sale del Catastro o del SIGPAC.</p></details>
+    <details><summary>¿Cuánto cuesta?</summary><p>Nada. El servicio está en fase de pruebas y los informes son gratuitos y sin límite.</p></details>
+    <details><summary>¿Sirve para una finca en el País Vasco o en Navarra?</summary><p>Sí. Sus catastros son forales y la referencia no funciona aquí, pero puedes elegir la parcela con un clic en el mapa: el recinto se toma del SIGPAC, que cubre toda España.</p></details>
+    <details><summary>Si el informe dice que no es inundable, ¿puedo estar tranquilo?</summary><p>No del todo. La cartografía oficial solo cubre los tramos de río estudiados. «No» significa que no hay lámina de inundación cartografiada sobre la parcela, no que el riesgo sea cero. Ante la duda, pregunta al organismo de cuenca.</p></details>
+    <details><summary>¿Por qué tarda la parte del satélite?</summary><p>Porque tu navegador lee, mes a mes, el trozo de cada imagen de Sentinel-2 que cubre la finca: entre 80 y 200 MB en total, según la zona, en uno o dos minutos. El resto del informe sale en segundos, y puedes parar la lectura cuando quieras: se empieza por los años más recientes.</p></details>
+    <details><summary>¿Puedo guardar el informe?</summary><p>Sí: con «Guardar en PDF o imprimir» tu navegador genera el PDF. También puedes copiar el enlace para volver a generarlo o descargar los datos.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="pie">
+  <p><span data-dato="marca">Lurra</span>. Informes informativos y no vinculantes elaborados con datos públicos del Catastro, el FEGA (SIGPAC), el MITECO, el IGN y el programa Copernicus.</p>
+  <p><a href="guia/">Guías</a> <a href="aviso-legal.html">Aviso legal</a> <a href="privacidad.html">Privacidad</a> <a href="condiciones.html">Condiciones</a></p>
+</footer>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/geotiff/geotiff.js"></script>
+<script type="module" src="js/app.js"></script>
+<script src="web.js"></script>
+</body>
+</html>

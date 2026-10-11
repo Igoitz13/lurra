@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacidad · Lurra</title>
+<meta name="description" content="Lurra no recoge datos personales: el informe se calcula en tu navegador. Qué servicios se consultan y qué se guarda en tu equipo.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="estilo.css">
+<script src="config.js"></script>
+</head>
+<body>
+<!-- BORRADOR redactado sin asesoramiento jurídico: revísalo con una gestoría o un abogado antes de cobrar por el servicio. -->
+<header class="cabecera">
+  <a class="marca" href="./" aria-label="Lurra, inicio">Lurra</a>
+  <nav aria-label="Secciones">
+    <a href="./#herramienta">Hacer un informe</a>
+    <a href="guia/">Guías</a>
+  </nav>
+</header>
+<main class="legal">
+<h1>Privacidad</h1>
+<p class="tenue">Última actualización: octubre de 2026.</p>
+
+<h2>En pocas palabras</h2>
+<p>Lurra no tiene servidor propio, ni cuentas de usuario, ni formularios que envíen nada a su autor. No usa cookies ni publicidad. La referencia catastral o el recinto que consultas no llegan a Lurra: tu navegador pregunta directamente a los servicios públicos de datos y hace los cálculos en tu equipo.</p>
+
+<h2>Qué ve cada cual</h2>
+<p><strong>El alojamiento de la web.</strong> Las páginas se sirven desde <span data-dato="alojamiento">un proveedor de alojamiento de páginas estáticas</span>. Como cualquier servidor web, recibe tu dirección IP y los datos técnicos de la conexión al descargar la página. El autor de Lurra no tiene acceso a esos registros.</p>
+<p><strong>Los servicios de datos.</strong> Para componer el informe y dibujar los mapas, tu navegador se conecta con los servicios de estos organismos y empresas, que reciben tu dirección IP y la zona o la referencia que estás consultando:</p>
+<ul>
+<li>Dirección General del Catastro (catastro.meh.es).</li>
+<li>Fondo Español de Garantía Agraria, SIGPAC (sigpac-hubcloud.es).</li>
+<li>Instituto Geográfico Nacional e Infraestructura de Datos Espaciales de España (ign.es, idee.es).</li>
+<li>Inventario Español del Patrimonio Natural y de la Biodiversidad, MITECO (iepnb.es).</li>
+<li>Agencia Europea de Medio Ambiente (eea.europa.eu), solo fuera de España.</li>
+<li>Element 84 y Amazon Web Services, para las imágenes Sentinel-2 y el relieve global.</li>
+<li>Esri (arcgis.com), para la cobertura del suelo.</li>
+<li>OpenStreetMap y EOX, para los mapas de fondo.</li>
+</ul>
+<p>Cada uno aplica su propia política de privacidad. Lurra no les envía tu nombre, tu correo ni ningún otro dato sobre ti, porque no los tiene.</p>
+<p><strong>El buscador de lugares.</strong> Si escribes un municipio o un paraje en el buscador del mapa, ese texto se envía a Nominatim, el servicio de búsqueda de OpenStreetMap.</p>
+
+<h2>Qué se guarda en tu equipo</h2>
+<p>Para no repetir una descarga de entre 80 y 200 MB, la serie de vegetación por satélite de cada finca consultada se guarda en el almacenamiento local de tu navegador y se borra al volver a abrir la página cuando han pasado 30 días. No sale de tu equipo. Puedes borrarla antes desde los ajustes del navegador, eliminando los datos de este sitio.</p>
+
+<h2>Enlaces a un informe</h2>
+<p>El botón «Copiar enlace a este informe» crea una dirección que contiene la referencia catastral o las coordenadas de la finca. Quien reciba ese enlace sabrá qué finca has consultado.</p>
+
+<div data-si="contador">
+<h2>Recuento de visitas</h2>
+<p>Esta web cuenta las visitas con GoatCounter, un contador sin cookies que no identifica a las personas. Solo se registra que alguien ha abierto la página, ha generado un informe o ha leído la historia por satélite. No se envían la dirección de la página ni ningún dato de la finca consultada. Si llegas desde otra web, se anota el nombre de esa web. Como en cualquier conexión, el servicio recibe tu dirección IP y el tipo de navegador.</p>
+</div>
+
+<h2>Datos de la finca</h2>
+<p>La referencia catastral identifica una parcela, no a una persona. Los informes se elaboran solo con información pública y no incluyen el nombre del titular catastral ni ningún otro dato protegido.</p>
+
+<h2>Tus derechos</h2>
+<p>Como Lurra no guarda datos tuyos, no hay nada que rectificar ni que borrar por su parte. Para los datos que traten los servicios citados, dirígete a cada uno de ellos.<span data-si="email"> Si tienes dudas sobre esta página, escribe a <span data-dato="email"></span>.</span> También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+</main>
+<footer class="pie">
+  <p><span data-dato="marca">Lurra</span>. Informes informativos y no vinculantes elaborados con datos públicos del Catastro, el FEGA (SIGPAC), el MITECO, el IGN y el programa Copernicus.</p>
+  <p><a href="guia/">Guías</a> <a href="aviso-legal.html">Aviso legal</a> <a href="privacidad.html">Privacidad</a> <a href="condiciones.html">Condiciones</a></p>
+</footer>
+<script src="web.js"></script>
+</body>
+</html>
