@@ -18,5 +18,5 @@ window.LURRA = {
   // cuenta, por ejemplo "lurra" para lurra.goatcounter.com. Vacío: no se cuenta nada.
   // Solo se envían tres avisos sin datos de la finca: «inicio», «informe» y «satelite».
   // Si lo activas, crea antes la cuenta en goatcounter.com (gratuita para uso no comercial).
-  contador: ""
+  contador: "lurra"
 };
