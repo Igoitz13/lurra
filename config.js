@@ -3,11 +3,11 @@ window.LURRA = {
   marca: "Lurra",
 
   // Correo de contacto que se muestra en las páginas legales. Vacío: no se muestra.
-  email: "",
+  email: "igoitzmateo@gmail.com",
 
   // Tu nombre para el aviso legal (recomendable). NIF y domicilio: obligatorios cuando
   // la web cobre; mientras sea gratuita puedes dejarlos vacíos y no se muestran.
-  titular: "",
+  titular: "Igoitz Mateo Zufiria",
   nif: "",
   domicilio: "",
 
