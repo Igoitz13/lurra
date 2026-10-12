@@ -1,6 +1,6 @@
 // Lurra: página principal. Une el formulario, el mapa, el motor y el informe.
 
-import { idioma as crearIdioma } from "./i18n.js";
+import { cargarIdioma } from "./i18n.js";
 import { ErrorLurra } from "./red.js";
 import { deGeoJSON, deKml, medir, validarRecinto } from "./geo.js";
 import * as catastro from "./catastro.js";
@@ -10,7 +10,8 @@ import { h, pintarInforme, seccionSatelite } from "./informe.js";
 import { buscarLugar, crearMapa } from "./mapa.js";
 
 const cfg = window.LURRA || {};
-const L = crearIdioma(document.documentElement.lang === "en" ? "en" : "es");
+// El idioma es el de la página (<html lang>): su diccionario se descarga antes de empezar.
+const L = await cargarIdioma(document.documentElement.lang || "es");
 const { t } = L;
 const $ = (id) => document.getElementById(id);
 const DESDE = "2017-01-01";
@@ -51,6 +52,9 @@ function huella(geom) {
   for (let i = 0; i < texto.length; i++) hsh = Math.imul(hsh ^ texto.charCodeAt(i), 16777619);
   return (hsh >>> 0).toString(36);
 }
+// Parcelas de ejemplo que ofrece la página (botones y enlaces con data-ejemplo).
+const EJEMPLOS = new Set([...document.querySelectorAll("[data-ejemplo]")].map((el) => el.dataset.ejemplo));
+const esEjemplo = (parcela) => Boolean(parcela && parcela.refcat && EJEMPLOS.has(parcela.refcat));
 // Caché de la serie de satélite en el almacenamiento local del navegador (30 días).
 const PREFIJO_CACHE = "lurra:sat:";
 const VERSION_CACHE = "v3";
@@ -98,6 +102,8 @@ function activarPestana(nombre) {
   if (nombre !== "ref") {
     iniciarMapa();
     mapa.modo(nombre === "dibujo" ? "dibujo" : "clic");
+    // Para elegir una parcela con un clic hacen falta las líneas del Catastro (solo hay en España).
+    if (nombre === "clic" && !$("capa-catastro").checked) { $("capa-catastro").checked = true; mapa.capa("catastro", true); }
     $("herramientas-dibujo").hidden = nombre !== "dibujo";
     avisar("mapa-ayuda", t(nombre === "dibujo" ? "app.mapa.dibujar" : "app.mapa.clic"));
     setTimeout(() => mapa.ajustar(), 50);
@@ -114,8 +120,13 @@ function proponer(parcela, texto) {
 
 function iniciarMapa() {
   if (mapa) return;
+  const datos = $("herramienta").dataset;
+  const vista = (datos.vista || "").split(",").map(Number);
   mapa = crearMapa($("mapa"), {
     L: window.L,
+    vista: vista.length === 3 && vista.every(Number.isFinite) ? vista : null,
+    fondo: datos.fondo || "orto",
+    catastro: $("capa-catastro").checked,
     alClic: async (lon, lat, zoom) => {
       const turno = ++turnoMapa; // si llega otro clic o una búsqueda, esta respuesta ya no vale
       avisar("mapa-error", "");
@@ -249,7 +260,7 @@ async function lanzarSatelite(res, ctrl) {
   $("informe-listo").textContent = completa ? t("app.sat.lista") : "";
   if (completa || sat.estado === "pequena" || sat.estado === "vacia") zona.hidden = true;
   else ofrecerSatelite(res, ctrl, sat.estado === "error" || sat.estado === "omitido" ? "app.sat.iniciar" : "app.sat.continuar", false);
-  if (completa) contar("satelite");
+  if (completa && !esEjemplo(res.parcela)) contar("satelite");
 }
 
 async function hacerInforme(parcela) {
@@ -270,6 +281,7 @@ async function hacerInforme(parcela) {
   try {
     const res = await generarInforme(parcela, {
       senal,
+      idioma: L.codigo,
       alAvance: ({ paso, estado }) => { if (control === ctrl) { estados[paso] = estado; pintarProgreso(estados); } },
     });
     if (senal.aborted || control !== ctrl) return;
@@ -284,7 +296,8 @@ async function hacerInforme(parcela) {
     const tituloInforme = document.querySelector(".informe h1").textContent;
     document.title = `${tituloInforme} · ${cfg.marca || "Lurra"}`;
     $("informe-listo").textContent = t("app.informe_listo", { titulo: tituloInforme }); // aviso para lectores de pantalla
-    contar("informe");
+    // Los informes de las parcelas de ejemplo se cuentan aparte: no miden demanda real.
+    contar(esEjemplo(parcela) ? "ejemplo" : "informe");
     if (res.satelite.estado === "pendiente") {
       const conexion = navigator.connection || {};
       const ahorro = conexion.saveData || /2g|3g/.test(conexion.effectiveType || "") || conexion.type === "cellular";
@@ -333,6 +346,14 @@ function iniciar() {
       boton.disabled = false;
     }
   });
+
+  // Ejemplos: rellenan la referencia y piden el informe, sin recargar la página.
+  document.querySelectorAll("[data-ejemplo]").forEach((el) => el.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    activarPestana("ref");
+    $("ref").value = el.dataset.ejemplo;
+    $("form-ref").requestSubmit();
+  }));
 
   $("mapa-usar").addEventListener("click", () => candidata && hacerInforme(candidata));
   $("dib-terminar").addEventListener("click", () => { if (!mapa.terminar()) avisar("mapa-error", t("error.pocos_puntos")); });
@@ -432,12 +453,13 @@ function iniciar() {
     document.title = TITULO_PAGINA;
     history.replaceState(null, "", location.pathname);
     document.getElementById("herramienta").scrollIntoView({ behavior: "smooth" });
-    $("ref").focus({ preventScroll: true });
+    ($("panel-ref").hidden ? $("lugar") : $("ref")).focus({ preventScroll: true });
   });
 
   // Informe directo desde el enlace: ?ref=REFERENCIA o ?p=lon,lat
   const q = new URLSearchParams(location.search);
   if (q.get("ref")) {
+    activarPestana("ref");
     $("ref").value = q.get("ref");
     $("form-ref").requestSubmit();
   } else if (q.get("p")) {
@@ -457,8 +479,12 @@ function iniciar() {
     }
   }
 
-  // El enlace al otro idioma conserva el informe que se está viendo.
-  document.querySelectorAll(".cabecera a[hreflang]").forEach((a) => a.addEventListener("click", () => {
+  // Las páginas que empiezan por el mapa (las de fuera de España) lo abren ya.
+  const inicial = $("herramienta").dataset.inicio;
+  if (inicial && inicial !== "ref" && !q.get("ref")) activarPestana(inicial);
+
+  // El enlace a otro idioma conserva el informe que se está viendo.
+  document.querySelectorAll(".idiomas a, .pie__idiomas a").forEach((a) => a.addEventListener("click", () => {
     const u = new URL(a.href);
     u.search = location.search;
     a.href = u.toString();

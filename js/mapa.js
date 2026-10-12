@@ -4,18 +4,21 @@ import { CAPAS_TESELA } from "./teselas.js";
 
 const plantilla = (fn) => fn("{z}", "{x}", "{y}");
 
-export function crearMapa(el, { L, alClic, alDibujar, alCambiar }) {
-  const mapa = L.map(el, { center: [40.2, -3.6], zoom: 6, zoomControl: true, attributionControl: true });
+/** `vista`: [lat, lon, zoom] con que se abre; `fondo`: capa de fondo inicial; `catastro`: si se ven sus líneas. */
+export function crearMapa(el, { L, alClic, alDibujar, alCambiar, vista = null, fondo = "orto", catastro: conCatastro = true }) {
+  const [lat0, lon0, zoom0] = vista || [40.2, -3.6, 6];
+  const mapa = L.map(el, { center: [lat0, lon0], zoom: zoom0, zoomControl: true, attributionControl: true, worldCopyJump: true });
   const s2 = L.tileLayer(plantilla(CAPAS_TESELA.s2), { maxNativeZoom: 14, maxZoom: 20, attribution: "Sentinel-2 cloudless © EOX (Copernicus Sentinel 2016)" });
   const pnoa = L.tileLayer(plantilla(CAPAS_TESELA.pnoa), { maxNativeZoom: 19, maxZoom: 20, minZoom: 6, bounds: [[27.3, -18.5], [44.1, 4.7]], attribution: "PNOA © IGN España" });
   const osm = L.tileLayer(plantilla(CAPAS_TESELA.osm), { maxNativeZoom: 19, maxZoom: 20, attribution: "© OpenStreetMap" });
   const catastro = L.tileLayer.wms("https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx", {
     layers: "Catastro", format: "image/png", transparent: true, minZoom: 15, maxZoom: 20, opacity: 0.85, attribution: "D. G. del Catastro",
   });
-  const orto = L.layerGroup([s2, pnoa]).addTo(mapa);
-  catastro.addTo(mapa);
+  const orto = L.layerGroup([s2, pnoa]);
+  if (conCatastro) catastro.addTo(mapa);
   const satelite = L.tileLayer(plantilla(CAPAS_TESELA.s2), { maxNativeZoom: 14, maxZoom: 20, attribution: "Sentinel-2 cloudless © EOX (Copernicus Sentinel 2016)" });
   const capas = { orto, satelite, mapa: osm, catastro };
+  (capas[fondo] && fondo !== "catastro" ? capas[fondo] : orto).addTo(mapa);
 
   let modo = "clic";
   let vertices = [];
@@ -115,7 +118,7 @@ export function crearMapa(el, { L, alClic, alDibujar, alCambiar }) {
 
 /** Busca un lugar por nombre (Nominatim, OpenStreetMap). Devuelve [{nombre, lat, lon, caja}]. */
 export async function buscarLugar(texto, idioma = "es") {
-  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=${idioma}&q=${encodeURIComponent(texto)}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=${encodeURIComponent(idioma)}&q=${encodeURIComponent(texto)}`;
   const r = await fetch(url);
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return (await r.json()).map((x) => ({ nombre: x.display_name, lat: Number(x.lat), lon: Number(x.lon), caja: (x.boundingbox || []).map(Number) }));

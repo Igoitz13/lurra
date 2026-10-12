@@ -3,8 +3,8 @@
 
 import { aMercator, MEDIO_MUNDO, resolucionMercator } from "./geo.js";
 import { evaluar } from "./semaforo.js";
-import { USOS } from "./sigpac.js";
 import { CAPAS_TESELA } from "./teselas.js";
+import { urlInundacion } from "./mundo.js";
 
 const SVG = "http://www.w3.org/2000/svg";
 let contador = 0;
@@ -94,7 +94,11 @@ export function figuraMapa(res, { fondo, zMaxFondo, encuadre = 0.6, inundacion =
   };
   marco.appendChild(teselas(fondo, zMaxFondo));
 
-  if (inundacion) {
+  if (inundacion === "mundo") {
+    // Imagen del modelo mundial (GloFAS) para todo el marco, teñida de un solo azul.
+    const caja = [px0 * r - MEDIO_MUNDO, MEDIO_MUNDO - (py0 + alto) * r, (px0 + ancho) * r - MEDIO_MUNDO, MEDIO_MUNDO - py0 * r];
+    marco.appendChild(s("image", { href: urlInundacion(caja, ancho, alto, "EPSG:3857"), x: 0, y: 0, width: ancho, height: alto, filter: `url(#${id}t100)`, preserveAspectRatio: "none" }));
+  } else if (inundacion) {
     for (const [capa, tinte] of [["NZ.Flood.FluvialT500", "t500"], ["NZ.Flood.MarinaT500", "t500"], ["NZ.Flood.FluvialT100", "t100"], ["NZ.Flood.MarinaT100", "t100"], ["NZ.Flood.FluvialT10", "t10"]])
       marco.appendChild(teselas(CAPAS_TESELA.snczi(capa), 18, { filter: `url(#${id}${tinte})` }));
   }
@@ -111,9 +115,20 @@ export function figuraMapa(res, { fondo, zMaxFondo, encuadre = 0.6, inundacion =
     defs.appendChild(mascara);
     marco.appendChild(s("rect", { width: ancho, height: alto, fill: `url(#${id}raya)`, mask: `url(#${id}prot)` }));
   } else if (Array.isArray(protegidos)) {
-    // Contornos ya descargados por el motor (resto de la UE).
-    for (const geom of protegidos)
-      marco.appendChild(s("path", { d: trazado(geom), fill: `url(#${id}raya)`, stroke: "#14694a", "stroke-width": 1.4, "stroke-linejoin": "round", "fill-rule": "evenodd" }));
+    // Contornos ya descargados por el motor (fuera de España). El rayado se pinta una sola
+    // vez, con todos los espacios como máscara: si varios se solapan, no se oscurece.
+    if (protegidos.length) {
+      const mascara = s("mask", { id: `${id}prot`, maskUnits: "userSpaceOnUse", x: 0, y: 0, width: ancho, height: alto });
+      const trazos = s("g", { fill: "none", stroke: "#14694a", "stroke-width": 1.2, "stroke-linejoin": "round" });
+      for (const geom of protegidos) {
+        const camino = trazado(geom);
+        mascara.appendChild(s("path", { d: camino, fill: "#fff", "fill-rule": "evenodd" }));
+        trazos.appendChild(s("path", { d: camino }));
+      }
+      defs.appendChild(mascara);
+      marco.appendChild(s("rect", { width: ancho, height: alto, fill: `url(#${id}raya)`, mask: `url(#${id}prot)` }));
+      marco.appendChild(trazos);
+    }
   }
 
   const d = trazado(res.parcela.geom);
@@ -243,8 +258,9 @@ function titulo(res, L) {
 }
 
 function usoTexto(codigo, L) {
-  const u = USOS[codigo];
-  return u ? u[L.codigo === "en" ? 1 : 0] : codigo || "–";
+  const clave = `uso.${codigo}`;
+  const texto = L.t(clave);
+  return texto === clave ? codigo || "–" : texto;
 }
 
 function seccion(n, texto, ...hijos) {
@@ -275,6 +291,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
     h("p", { class: "informe__sello" }, h("span", { class: "marca" }, sitio), " · ", t("inf.titulo_documento")),
     h("h1", {}, titulo(res, L)),
     d.localizacion || d.municipio ? h("p", { class: "informe__lugar" }, d.paraje ? `${d.paraje}, ` : "", d.municipio || "", d.provincia ? ` (${d.provincia})` : "") : null,
+    p.lugar ? h("p", { class: "informe__lugar" }, p.lugar.texto) : null,
     p.origen === "sigpac" ? h("p", { class: "informe__lugar" }, [d.provincia, p.id].filter(Boolean).join(" · ")) : null,
     h("p", { class: "informe__ref" }, p.refcat ? t("inf.refcat", { refcat: p.refcat }) : t("inf.centro", { lat: num(p.centro[1], 5), lon: num(p.centro[0], 5) }))));
 
@@ -306,6 +323,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
   const filasFicha = [];
   if (p.refcat) filasFicha.push([t("inf.f.refcat"), p.refcat]);
   if (d.localizacion) filasFicha.push([t("inf.f.localizacion"), d.localizacion]);
+  else if (p.lugar) filasFicha.push([t("inf.f.localizacion"), p.lugar.texto]);
   if (d.clase) filasFicha.push([t("inf.f.clase"), [t(`inf.f.clase.${d.clase}`), d.uso].filter(Boolean).join(" · ")]);
   filasFicha.push([t("inf.f.origen"), t(`inf.f.origen.${p.origen}`)]);
   if (p.areaCatastroM2) {
@@ -345,20 +363,21 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
   }
 
   // ---- 3. agua
-  if (es && res.inundacion && !Array.isArray(res.inundacion.capas)) {
+  const inu = res.inundacion;
+  if (inu && !Array.isArray(inu.capas)) {
     doc.appendChild(seccion(3, t("inf.s3"), aviso(t("inf.a.error_total"))));
-  } else if (es && res.inundacion) {
-    const inu = res.inundacion;
+  } else if (inu) {
     const s3 = seccion(3, t("inf.s3"), tabla([t("inf.a.capa"), t("inf.a.resultado"), t("inf.a.superficie"), t("inf.a.pct")],
       (inu.capas || []).map((c) => ({ clase: c.afecta ? "fila-afecta" : c.estado !== "ok" ? "fila-error" : null, celdas: [t(`capa.${c.id}`), resultadoCapa(c, L, inu.entornoM), c.estado === "ok" ? m2(c.m2) : "–", c.estado === "ok" ? `${num(c.pct)} %` : "–"] })), { numericas: [2, 3] }));
     if (inu.capas.some((c) => c.estado === "ok" && c.incompleta)) s3.appendChild(aviso(t("inf.a.entorno_incompleto")));
-    s3.appendChild(nota(t("inf.a.nota", { pixel: num(inu.pixelM || 1, 1) })));
+    s3.appendChild(nota(es ? t("inf.a.nota", { pixel: num(inu.pixelM || 1, 1) }) : t("inf.a.nota_mundo", { pixel: num(inu.pixelM) })));
     doc.appendChild(s3);
   } else {
-    doc.appendChild(seccion(3, t("inf.s3"), res.ambitoDudoso ? aviso(t("inf.ambito_dudoso")) : nota(t("inf.a.sin_cobertura"))));
+    doc.appendChild(seccion(3, t("inf.s3"), aviso(t(res.ambitoDudoso ? "inf.ambito_dudoso" : "inf.a.error_total"))));
   }
 
   // ---- 4. protección
+  const hayModelo = !es && inu && Array.isArray(inu.capas) && inu.capas.some((c) => c.estado === "ok");
   if (res.proteccion) {
     const filas = res.proteccion.map((c) => {
       const texto = c.estado !== "ok" ? t("inf.p.error") : c.elementos.length
@@ -368,13 +387,17 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
     });
     const s4 = seccion(4, t("inf.s4"), tabla([t("inf.p.capa"), t("inf.p.resultado"), t("inf.a.superficie"), t("inf.a.pct")], filas, { numericas: [2, 3] }));
     s4.appendChild(h("figure", { class: "figura figura--ancha" },
-      figuraMapa(res, { fondo: es ? CAPAS_TESELA.ignBase : CAPAS_TESELA.osm, zMaxFondo: es ? 18 : 19, encuadre: 0.2, inundacion: es, protegidos: es ? "es" : res.proteccion.flatMap((c) => c.dibujo || []), alto: 380, etiqueta: t(es ? "inf.mapa2.pie" : "inf.mapa2.pie_ue") }),
-      h("figcaption", {}, t(es ? "inf.mapa2.pie" : "inf.mapa2.pie_ue")),
-      leyenda([["muestra--parcela", t("inf.leyenda.parcela")], ...(es ? [["muestra--t10", t("inf.leyenda.t10")], ["muestra--t100", t("inf.leyenda.t100")], ["muestra--t500", t("inf.leyenda.t500")]] : []), ["muestra--verde", t("inf.leyenda.protegido")]])));
-    s4.appendChild(nota(t(es ? "inf.p.nota" : "inf.p.nota_ue")));
+      figuraMapa(res, { fondo: es ? CAPAS_TESELA.ignBase : CAPAS_TESELA.osm, zMaxFondo: es ? 18 : 19, encuadre: 0.2, inundacion: es ? true : hayModelo ? "mundo" : false, protegidos: es ? "es" : res.proteccion.flatMap((c) => c.dibujo || []), alto: 380, etiqueta: t(es ? "inf.mapa2.pie" : "inf.mapa2.pie_mundo") }),
+      h("figcaption", {}, t(es ? "inf.mapa2.pie" : "inf.mapa2.pie_mundo")),
+      leyenda([["muestra--parcela", t("inf.leyenda.parcela")], ...(es ? [["muestra--t10", t("inf.leyenda.t10")], ["muestra--t100", t("inf.leyenda.t100")], ["muestra--t500", t("inf.leyenda.t500")]] : hayModelo ? [["muestra--t100", t("inf.leyenda.t100")]] : []), ["muestra--verde", t("inf.leyenda.protegido")]])));
+    if (es) s4.appendChild(nota(t("inf.p.nota")));
+    else {
+      if (res.ambito === "ue") s4.appendChild(nota(t("inf.p.nota_ue")));
+      s4.appendChild(nota(t("inf.p.nota_wdpa")));
+    }
     doc.appendChild(s4);
   } else {
-    doc.appendChild(seccion(4, t("inf.s4"), nota(t("inf.p.sin_cobertura"))));
+    doc.appendChild(seccion(4, t("inf.s4"), aviso(t("inf.p.error"))));
   }
 
   // ---- 5. uso / cobertura
@@ -421,6 +444,8 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
     es ? t("inf.fu.sigpac", { fecha }) : null,
     es ? t("inf.fu.snczi") : null,
     es ? t("inf.fu.iepnb") : res.ambito === "ue" ? t("inf.fu.eea") : null,
+    hayModelo ? t("inf.fu.glofas") : null,
+    !es && res.proteccion ? t("inf.fu.wdpa", { fecha: L.mesAno(res.generado.slice(0, 10)) }) : null,
     es ? t("inf.fu.ign") : null,
     rel.fuente === "terrarium" ? t("inf.fu.terrarium") : null,
     anos ? t("inf.fu.sentinel", { anos }) : null,
@@ -429,6 +454,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
     !es ? t("inf.fu.osm") : null,
   ].filter(Boolean);
   doc.appendChild(h("section", { class: "apartado fuentes" }, h("h2", {}, t("inf.fuentes")), h("ul", {}, fuentes.map((f) => h("li", {}, f))), h("p", {}, t("inf.limites"))));
+  if (L.traducido) doc.appendChild(h("p", { class: "informe__traduccion" }, t("inf.traduccion")));
   doc.appendChild(h("footer", { class: "informe__pie" }, h("span", {}, t("inf.generado", { fecha })), h("span", {}, t("inf.pagina_gratis", { sitio }))));
   return doc;
 }

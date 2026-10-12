@@ -11,8 +11,9 @@ import * as proteccion from "./proteccion.js";
 import * as relieve from "./relieve.js";
 import * as cobertura from "./cobertura.js";
 import * as satelite from "./satelite.js";
+import * as mundo from "./mundo.js";
 
-export const VERSION = 2;
+export const VERSION = 3;
 export const AREA_MAX_M2 = 50000000; // 5.000 ha
 export const AREA_MIN_M2 = 20;
 export const AREA_MIN_SATELITE_M2 = 2000;
@@ -76,7 +77,7 @@ async function paso(nombre, alAvance, fn) {
  * Genera el informe (sin la historia por satélite, que se añade después con `historiaSatelite`).
  * `alAvance({paso, estado})` informa del progreso de cada apartado.
  */
-export async function generarInforme(parcela, { alAvance = () => {}, senal = null } = {}) {
+export async function generarInforme(parcela, { alAvance = () => {}, senal = null, idioma = "es" } = {}) {
   const propio = parcela.origen === "dibujo" || parcela.origen === "fichero";
   const problema = propio ? validarRecinto(parcela.geom) : validar(parcela.geom);
   if (problema) throw new ErrorLurra(problema);
@@ -95,15 +96,20 @@ export async function generarInforme(parcela, { alAvance = () => {}, senal = nul
 
   const tareas = {
     relieve: paso("relieve", alAvance, () => relieve.analizar(ctx, ambito, opciones)),
-    proteccion: ambito === "mundo" ? null : paso("proteccion", alAvance, () => proteccion.analizar(ctx, ambito, opciones)),
-    inundacion: ambito === "es" ? paso("inundacion", alAvance, () => inundacion.analizar(ctx, opciones)) : null,
+    proteccion: paso("proteccion", alAvance, () => proteccion.analizar(ctx, ambito, opciones)),
+    // España: cartografía oficial del SNCZI. Resto del mundo: modelo mundial de GloFAS, salvo
+    // que no se sepa si el recinto está en España (entonces no se da por buena una respuesta peor).
+    inundacion: ambito === "es" ? paso("inundacion", alAvance, () => inundacion.analizar(ctx, opciones))
+      : dudoso ? null : paso("inundacion", alAvance, () => mundo.inundacion(ctx, opciones)),
     sigpac: ambito === "es" ? paso("sigpac", alAvance, async () => {
       const r = await sigpac.consultar(ctx, opciones);
       return { estado: "ok", recintos: r.recintos.map(({ geom, ...resto }) => resto), cubiertoPct: r.cubiertoPct };
     }) : null,
     cobertura: ambito !== "es" ? paso("cobertura", alAvance, () => cobertura.analizar(ctx, opciones)) : null,
+    // Fuera de España el recinto no trae municipio: se pregunta por el nombre del lugar.
+    lugar: ambito !== "es" ? mundo.lugar(ctx.medida.centroLonLat, idioma, opciones) : null,
   };
-  const [rel, prot, inun, sig, cob] = await Promise.all(Object.values(tareas));
+  const [rel, prot, inun, sig, cob, lugar] = await Promise.all(Object.values(tareas));
 
   const { geom, recintosSigpac, ...resto } = parcela;
   return {
@@ -118,10 +124,11 @@ export async function generarInforme(parcela, { alAvance = () => {}, senal = nul
       perimetroM: ctx.medida.perimetroM,
       centro: ctx.medida.centroLonLat,
       caja: ctx.medida.cajaLonLat,
+      ...(lugar ? { lugar } : {}),
     },
     relieve: rel,
     // Si la capa de protección entera falla, se anota como una entrada con error por capa.
-    proteccion: Array.isArray(prot) ? prot : prot ? (ambito === "es" ? ["rn2000", "enp"] : ["rn2000"]).map((id) => ({ id, nivel: "ambar", estado: "error", afecta: false, m2: 0, pct: 0, elementos: [] })) : null,
+    proteccion: Array.isArray(prot) ? prot : prot ? proteccion.capasDe(ambito).map((id) => ({ id, nivel: "ambar", estado: "error", afecta: false, m2: 0, pct: 0, elementos: [] })) : null,
     inundacion: inun,
     sigpac: sig,
     cobertura: cob,

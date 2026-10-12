@@ -3,6 +3,8 @@
 // España: servicios WFS del Inventario Español del Patrimonio Natural y de la Biodiversidad
 // (MITECO, geoserver.iepnb.es), que devuelven los polígonos oficiales en GeoJSON.
 // Resto de la UE: servicio de la Agencia Europea de Medio Ambiente (Red Natura 2000).
+// Todo el mundo fuera de España: Base de Datos Mundial sobre Áreas Protegidas (Protected
+// Planet, de UNEP-WCMC y la UICN), con las figuras nacionales e internacionales de cada país.
 
 import { deGeoJSON, simplificar } from "./geo.js";
 import { pedir } from "./red.js";
@@ -10,6 +12,7 @@ import { pct, solapeM2, solapeUnionM2 } from "./contexto.js";
 
 const IEPNB = "https://geoserver.iepnb.es/geoserver";
 const EEA = "https://bio.discomap.eea.europa.eu/arcgis/rest/services/ProtectedSites/Natura2000Sites/MapServer/2/query";
+const WDPA = "https://data-gis.unep-wcmc.org/server/rest/services/ProtectedSites/The_World_Database_of_Protected_Areas/MapServer/1/query";
 
 export const CAPAS_ES = [
   {
@@ -96,17 +99,48 @@ async function natura2000Ue(ctx, opciones) {
   const url = `${EEA}?where=1%3D1&geometry=${caja}&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects` +
     `&outFields=SITECODE,SITENAME,SITETYPE&returnGeometry=true&outSR=4326&geometryPrecision=6&f=geojson`;
   const datos = await pedir(url, { como: "json", servicio: "EEA Natura 2000", espera: 45000, leer: coleccion, ...opciones });
-  // Tipos de espacio de la red: A = aves (ZEPA, en inglés SPA); B = hábitats (LIC/ZEC, SCI/SAC).
-  const figura = { A: "ZEPA (SPA)", B: "LIC/ZEC (SCI/SAC)", C: "ZEPA + LIC/ZEC (SPA + SCI/SAC)" };
+  // Tipos de espacio de la red, con sus siglas internacionales: A = aves (SPA, en España ZEPA); B = hábitats (SCI/SAC, LIC/ZEC).
+  const figura = { A: "SPA", B: "SCI/SAC", C: "SPA + SCI/SAC" };
   const leer = (p) => ({ codigo: p.SITECODE, nombre: p.SITENAME, figura: figura[p.SITETYPE] || p.SITETYPE });
   return resumen(ctx, "rn2000", "ambar", cruzar(ctx, datos.features, leer), { dibujar: true });
 }
+
+/**
+ * Lectura de una entidad de Protected Planet: nombre y figura. La figura va como viene en la
+ * base: en el idioma del país y, si es distinta, también en inglés.
+ */
+export const leerWdpa = (p) => {
+  const propia = (p.desig || "").trim(), ingles = (p.desig_eng || "").trim();
+  const figura = propia && ingles && propia.toLowerCase() !== ingles.toLowerCase() ? `${propia} (${ingles})` : propia || ingles;
+  return { codigo: null, nombre: p.name || p.name_eng, figura: [figura, p.site_id ? `WDPA ${p.site_id}` : null].filter(Boolean).join(" · ") };
+};
+/** En la UE los espacios Natura 2000 ya salen en su propia fila, con el dato de la EEA. */
+export const esNatura = (p) => /(birds|habitats) directive/i.test(p.desig_eng || "");
+
+async function protectedPlanet(ctx, ambito, opciones) {
+  const [lon0, lat0, lon1, lat1] = ctx.medida.cajaLonLat;
+  const tramo = Math.max(lat1 - lat0, (lon1 - lon0) * Math.cos((lat0 * Math.PI) / 180));
+  const entornoM = Math.min(1500, Math.max(150, 111320 * tramo));
+  const caja = cajaAmpliada(ctx, entornoM).map((v) => v.toFixed(6)).join(",");
+  // Los contornos se piden simplificados en proporción al tamaño del recinto (entre 2 y 50 m).
+  const tolerancia = Math.min(0.0005, Math.max(0.00002, tramo / 1500)).toFixed(6);
+  const url = `${WDPA}?where=${encodeURIComponent("status <> 'Proposed'")}&geometry=${caja}&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects` +
+    `&outFields=site_id,name,name_eng,desig,desig_eng,status&returnGeometry=true&outSR=4326&geometryPrecision=6&maxAllowableOffset=${tolerancia}&f=geojson`;
+  const datos = await pedir(url, { como: "json", servicio: "Protected Planet (UNEP-WCMC)", espera: 45000, leer: coleccion, ...opciones });
+  return resumen(ctx, "wdpa", "ambar", cruzar(ctx, datos.features, leerWdpa, ambito === "ue" ? esNatura : null), { dibujar: true });
+}
+
+/** Identificadores de las capas que se consultan en cada ámbito. */
+export const capasDe = (ambito) => (ambito === "es" ? CAPAS_ES.map((c) => c.id) : ambito === "ue" ? ["rn2000", "wdpa"] : ["wdpa"]);
 
 /** Devuelve una entrada por capa: {id, estado, afecta, m2, pct, elementos}. */
 export async function analizar(ctx, ambito, opciones = {}) {
   const tareas = ambito === "es"
     ? CAPAS_ES.map((c) => ({ id: c.id, nivel: c.nivel, fn: () => capaEs(ctx, c, opciones) }))
-    : ambito === "ue" ? [{ id: "rn2000", nivel: "ambar", fn: () => natura2000Ue(ctx, opciones) }] : [];
+    : [
+      ...(ambito === "ue" ? [{ id: "rn2000", nivel: "ambar", fn: () => natura2000Ue(ctx, opciones) }] : []),
+      { id: "wdpa", nivel: "ambar", fn: () => protectedPlanet(ctx, ambito, opciones) },
+    ];
   return Promise.all(tareas.map(async (t) => {
     try {
       return await t.fn();
