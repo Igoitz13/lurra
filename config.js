@@ -16,7 +16,9 @@ window.LURRA = {
 
   // Contador de visitas opcional (GoatCounter, sin cookies). Pon aquí el código de tu
   // cuenta, por ejemplo "lurra" para lurra.goatcounter.com. Vacío: no se cuenta nada.
-  // Solo se envían tres avisos sin datos de la finca: «inicio», «informe» y «satelite».
+  // Solo se envían cuatro avisos sin datos de la finca: «inicio», «informe», «ejemplo» y
+  // «satelite». Fuera de la portada en castellano, «inicio» e «informe» llevan el idioma
+  // de la página («inicio-de», «informe-fr»…).
   // Si lo activas, crea antes la cuenta en goatcounter.com (gratuita para uso no comercial).
   contador: "lurra"
 };

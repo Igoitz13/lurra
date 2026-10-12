@@ -3,27 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin">
 <title>Privacidad · Lurra</title>
 <meta name="description" content="Lurra no recoge datos personales: el informe se calcula en tu navegador. Qué servicios se consultan y qué se guarda en tu equipo.">
 <meta name="robots" content="noindex">
+<link rel="canonical" href="https://igoitz13.github.io/lurra/privacidad.html">
+<meta name="theme-color" content="#1a1a17">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="icon" href="img/icono-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lurra">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="Privacidad · Lurra">
+<meta property="og:description" content="Lurra no recoge datos personales: el informe se calcula en tu navegador. Qué servicios se consultan y qué se guarda en tu equipo.">
+<meta property="og:url" content="https://igoitz13.github.io/lurra/privacidad.html">
+<meta property="og:image" content="https://igoitz13.github.io/lurra/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="vendor/fuentes/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="vendor/fuentes/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilo.css">
 <script src="config.js"></script>
 </head>
 <body>
 <!-- BORRADOR redactado sin asesoramiento jurídico: revísalo con una gestoría o un abogado antes de cobrar por el servicio. -->
+<a class="salto" href="#contenido">Ir al contenido</a>
 <header class="cabecera">
-  <a class="marca" href="./" aria-label="Lurra, inicio">Lurra</a>
+  <a class="marca" href="./" aria-label="Lurra, inicio"><img src="img/icono.svg" alt="" width="32" height="32">Lurra</a>
   <nav aria-label="Secciones">
     <a href="./#herramienta">Hacer un informe</a>
     <a href="guia/">Guías</a>
   </nav>
 </header>
-<main class="legal">
-<h1>Privacidad</h1>
-<p class="tenue">Última actualización: octubre de 2026.</p>
-
+<main id="contenido">
+<div class="cima cima--texto">
+  <div class="cima__titulo">
+    <h1>Privacidad</h1>
+    <p class="entrada">Última actualización: octubre de 2026.</p>
+  </div>
+</div>
+<div class="legal">
 <h2>En pocas palabras</h2>
-<p>Lurra no tiene servidor propio, ni cuentas de usuario, ni formularios que envíen nada a su autor. No usa cookies ni publicidad. La referencia catastral o el recinto que consultas no llegan a Lurra: tu navegador pregunta directamente a los servicios públicos de datos y hace los cálculos en tu equipo.</p>
+<p>Lurra no tiene servidor propio, ni cuentas de usuario, ni formularios que envíen nada a su autor. No usa cookies ni publicidad, y las tipografías y los iconos van alojados en la propia web. La referencia catastral o el recinto que consultas no llegan a Lurra: tu navegador pregunta directamente a los servicios públicos de datos y hace los cálculos en tu equipo.</p>
 
 <h2>Qué ve cada cual</h2>
 <p><strong>El alojamiento de la web.</strong> Las páginas se sirven desde <span data-dato="alojamiento">un proveedor de alojamiento de páginas estáticas</span>. Como cualquier servidor web, recibe tu dirección IP y los datos técnicos de la conexión al descargar la página. El autor de Lurra no tiene acceso a esos registros.</p>
@@ -34,22 +57,25 @@
 <li>Instituto Geográfico Nacional e Infraestructura de Datos Espaciales de España (ign.es, idee.es).</li>
 <li>Inventario Español del Patrimonio Natural y de la Biodiversidad, MITECO (iepnb.es).</li>
 <li>Agencia Europea de Medio Ambiente (eea.europa.eu), solo fuera de España.</li>
+<li>Protected Planet, de UNEP-WCMC (unep-wcmc.org), para los espacios protegidos fuera de España.</li>
+<li>Servicio de Gestión de Emergencias de Copernicus (globalfloods.eu), para el modelo mundial de inundación, fuera de España.</li>
 <li>Element 84 y Amazon Web Services, para las imágenes Sentinel-2 y el relieve global.</li>
 <li>Esri (arcgis.com), para la cobertura del suelo.</li>
 <li>OpenStreetMap y EOX, para los mapas de fondo.</li>
 </ul>
 <p>Cada uno aplica su propia política de privacidad. Lurra no les envía tu nombre, tu correo ni ningún otro dato sobre ti, porque no los tiene.</p>
-<p><strong>El buscador de lugares.</strong> Si escribes un municipio o un paraje en el buscador del mapa, ese texto se envía a Nominatim, el servicio de búsqueda de OpenStreetMap.</p>
+<p><strong>El buscador de lugares.</strong> Si escribes un municipio o un paraje en el buscador del mapa, ese texto se envía a Nominatim, el servicio de búsqueda de OpenStreetMap. En los informes de fuera de España se le pregunta además el nombre del lugar, enviándole el centro del recinto redondeado a unos cien metros.</p>
+<p><strong>El idioma.</strong> La web está en varios idiomas. El de la página se decide por su dirección; el de tu navegador solo se usa, en tu equipo, para ofrecerte un enlace a la versión en tu idioma. Los textos de cada idioma se descargan de esta misma web.</p>
 
 <h2>Qué se guarda en tu equipo</h2>
-<p>Para no repetir una descarga de entre 80 y 200 MB, la serie de vegetación por satélite de cada finca consultada se guarda en el almacenamiento local de tu navegador y se borra al volver a abrir la página cuando han pasado 30 días. No sale de tu equipo. Puedes borrarla antes desde los ajustes del navegador, eliminando los datos de este sitio.</p>
+<p>Para no repetir una descarga de unos 80 MB, la serie de vegetación por satélite de cada finca consultada se guarda durante 30 días en el almacenamiento local de tu navegador. No sale de tu equipo. Puedes borrarla cuando quieras desde los ajustes del navegador, eliminando los datos de este sitio.</p>
 
 <h2>Enlaces a un informe</h2>
 <p>El botón «Copiar enlace a este informe» crea una dirección que contiene la referencia catastral o las coordenadas de la finca. Quien reciba ese enlace sabrá qué finca has consultado.</p>
 
 <div data-si="contador">
 <h2>Recuento de visitas</h2>
-<p>Esta web cuenta las visitas con GoatCounter, un contador sin cookies que no identifica a las personas. Solo se registra que alguien ha abierto la página, ha generado un informe o ha leído la historia por satélite. No se envían la dirección de la página ni ningún dato de la finca consultada. Si llegas desde otra web, se anota el nombre de esa web. Como en cualquier conexión, el servicio recibe tu dirección IP y el tipo de navegador.</p>
+<p>Esta web cuenta las visitas con GoatCounter, un contador sin cookies que no identifica a las personas. Solo se registran cuatro avisos («inicio», «informe», «ejemplo» y «satélite»), sin la dirección de la página y sin ningún dato de la finca consultada. En las páginas que no están en castellano, los dos primeros llevan además el código del idioma de la página (por ejemplo, «informe-fr»).</p>
 </div>
 
 <h2>Datos de la finca</h2>
@@ -57,10 +83,18 @@
 
 <h2>Tus derechos</h2>
 <p>Como Lurra no guarda datos tuyos, no hay nada que rectificar ni que borrar por su parte. Para los datos que traten los servicios citados, dirígete a cada uno de ellos.<span data-si="email"> Si tienes dudas sobre esta página, escribe a <span data-dato="email"></span>.</span> También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+</div>
 </main>
 <footer class="pie">
-  <p><span data-dato="marca">Lurra</span>. Informes informativos y no vinculantes elaborados con datos públicos del Catastro, el FEGA (SIGPAC), el MITECO, el IGN y el programa Copernicus.</p>
-  <p><a href="guia/">Guías</a> <a href="aviso-legal.html">Aviso legal</a> <a href="privacidad.html">Privacidad</a> <a href="condiciones.html">Condiciones</a></p>
+  <div class="pie__arriba">
+    <div>
+      <a class="marca" href="./" aria-label="Lurra, inicio"><img src="img/icono.svg" alt="" width="32" height="32">Lurra</a>
+      <p class="pie__lema">Informes gratuitos de fincas rústicas con datos públicos. Informativos y no vinculantes.</p>
+    </div>
+    <nav aria-label="Pie de página"><a href="./">Inicio</a> <a href="guia/">Guías</a> <a href="aviso-legal.html">Aviso legal</a> <a href="privacidad.html">Privacidad</a> <a href="condiciones.html">Condiciones</a></nav>
+  </div>
+  <nav class="pie__idiomas" aria-label="Idiomas"><strong>Idiomas</strong> <a href="./" lang="es" hreflang="es" aria-current="page">Español</a> <a href="ca.html" lang="ca" hreflang="ca">Català</a> <a href="eu.html" lang="eu" hreflang="eu">Euskara</a> <a href="gl.html" lang="gl" hreflang="gl">Galego</a> <a href="en/" lang="en" hreflang="en">English</a> <a href="es-419.html" lang="es-419" hreflang="es-419">Español (Latinoamérica)</a> <a href="pt-br.html" lang="pt-BR" hreflang="pt-BR">Português (Brasil)</a> <a href="pt.html" lang="pt" hreflang="pt">Português (Portugal)</a> <a href="fr.html" lang="fr" hreflang="fr">Français</a> <a href="de.html" lang="de" hreflang="de">Deutsch</a> <a href="it.html" lang="it" hreflang="it">Italiano</a> <a href="nl.html" lang="nl" hreflang="nl">Nederlands</a> <a href="sv.html" lang="sv" hreflang="sv">Svenska</a> <a href="da.html" lang="da" hreflang="da">Dansk</a> <a href="nb.html" lang="nb" hreflang="nb">Norsk (bokmål)</a> <a href="fi.html" lang="fi" hreflang="fi">Suomi</a> <a href="pl.html" lang="pl" hreflang="pl">Polski</a> <a href="cs.html" lang="cs" hreflang="cs">Čeština</a> <a href="sk.html" lang="sk" hreflang="sk">Slovenčina</a> <a href="hu.html" lang="hu" hreflang="hu">Magyar</a> <a href="ro.html" lang="ro" hreflang="ro">Română</a> <a href="bg.html" lang="bg" hreflang="bg">Български</a> <a href="hr.html" lang="hr" hreflang="hr">Hrvatski</a> <a href="el.html" lang="el" hreflang="el">Ελληνικά</a> <a href="tr.html" lang="tr" hreflang="tr">Türkçe</a> <a href="uk.html" lang="uk" hreflang="uk">Українська</a> <a href="ru.html" lang="ru" hreflang="ru">Русский</a> <a href="ar.html" lang="ar" hreflang="ar">العربية</a> <a href="he.html" lang="he" hreflang="he">עברית</a> <a href="fa.html" lang="fa" hreflang="fa">فارسی</a> <a href="ur.html" lang="ur" hreflang="ur">اردو</a> <a href="hi.html" lang="hi" hreflang="hi">हिन्दी</a> <a href="bn.html" lang="bn" hreflang="bn">বাংলা</a> <a href="id.html" lang="id" hreflang="id">Bahasa Indonesia</a> <a href="ms.html" lang="ms" hreflang="ms">Bahasa Melayu</a> <a href="fil.html" lang="fil" hreflang="fil">Filipino</a> <a href="vi.html" lang="vi" hreflang="vi">Tiếng Việt</a> <a href="th.html" lang="th" hreflang="th">ไทย</a> <a href="sw.html" lang="sw" hreflang="sw">Kiswahili</a> <a href="zh-hans.html" lang="zh-Hans" hreflang="zh-Hans">简体中文</a> <a href="zh-hant.html" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a> <a href="ja.html" lang="ja" hreflang="ja">日本語</a> <a href="ko.html" lang="ko" hreflang="ko">한국어</a></nav>
+  <p class="pie__fuentes">Elaborado con datos públicos del Catastro, el FEGA (SIGPAC), el MITECO, el IGN y el programa Copernicus; fuera de España, también de Protected Planet y OpenStreetMap. Esos organismos no avalan ni revisan los informes.</p>
 </footer>
 <script src="web.js"></script>
 </body>
