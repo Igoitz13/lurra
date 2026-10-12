@@ -276,6 +276,12 @@ function resultadoCapa(c, L, entornoM) {
   return L.t("inf.a.no");
 }
 
+/** «Ámbar: algunos puntos…»: solo la primera letra pasa a minúscula (en alemán, ni esa: los sustantivos van con mayúscula). */
+function minuscula(texto, idioma) {
+  if (!texto || /^de\b/.test(idioma)) return texto;
+  try { return texto[0].toLocaleLowerCase(idioma) + texto.slice(1); } catch { return texto[0].toLowerCase() + texto.slice(1); }
+}
+
 /** Devuelve el elemento con el informe completo. `sitio` es el nombre que firma el pie. */
 export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
   const { t, num, m2, area } = L;
@@ -297,7 +303,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
 
   doc.appendChild(h("div", { class: `semaforo semaforo--${sem.nivel}` },
     h("span", { class: "semaforo__icono", "aria-hidden": "true" }, sem.nivel === "verde" ? "✓" : sem.nivel === "incompleto" ? "?" : "!"),
-    h("div", {}, h("p", { class: "semaforo__titulo" }, `${sem.color}: ${sem.etiqueta.toLowerCase()}`), h("p", {}, sem.resumen))));
+    h("div", {}, h("p", { class: "semaforo__titulo" }, `${sem.color}: ${minuscula(sem.etiqueta, L.codigo)}`), h("p", {}, sem.resumen))));
   if (res.ambitoDudoso) doc.appendChild(aviso(t("inf.ambito_dudoso")));
 
   // ---- resumen con mapa
