@@ -476,12 +476,13 @@ main { counter-reset: bloque; }
 .cima__titulo .entrada { font-size: 1.22rem; margin-top: 1.1rem; max-width: none; }
 .migas { font: 500 .8rem/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); margin-bottom: 1rem; }
 .migas a { color: var(--tinta-2); }
+.migas--abajo { margin: 1.4rem 0 0; }
 .migas a:hover { color: var(--rojo); }
 .legal { width: min(100% - 2 * var(--lado), 46rem); margin: 0 auto; padding: 2.2rem 0 4rem; }
 .legal h2 { font-size: 2rem; margin: 2.6rem 0 .6rem; padding-top: .7rem; border-top: 1px solid var(--tinta); }
 .legal > h2:first-child { margin-top: .4rem; }
 .legal p, .legal li { margin-top: .7rem; }
-.legal ul { padding-inline-start: 1.2rem; }
+.legal ul, .legal ol { padding-inline-start: 1.2rem; }
 .legal li::marker { color: var(--rojo); }
 .legal .pendiente { background: #fff3cd; padding: 0 .25rem; }
 .legal .llamada { margin-top: 2.8rem; padding: 1.6rem 1.7rem 1.7rem; background: var(--tinta); color: #fff; }
