@@ -90,7 +90,9 @@ const cache = {
 };
 
 // --------------------------------------------------------------------- pestañas
-function activarPestana(nombre) {
+let pestanaPedida = null; // la última pestaña elegida: si el mapa aún se está cargando, manda esa
+async function activarPestana(nombre) {
+  pestanaPedida = nombre;
   document.querySelectorAll("[data-pestana]").forEach((b) => {
     const activa = b.dataset.pestana === nombre;
     b.setAttribute("aria-selected", activa ? "true" : "false");
@@ -99,8 +101,8 @@ function activarPestana(nombre) {
   $("panel-ref").hidden = nombre !== "ref";
   $("panel-mapa").hidden = nombre === "ref";
   if (nombre !== "ref") $("panel-mapa").setAttribute("aria-labelledby", `pestana-${nombre}`);
-  if (nombre !== "ref") {
-    iniciarMapa();
+  if (nombre !== "ref") { try { await iniciarMapa(); } catch { return; } }
+  if (nombre !== "ref" && pestanaPedida === nombre) {
     mapa.modo(nombre === "dibujo" ? "dibujo" : "clic");
     // Para elegir una parcela con un clic hacen falta las líneas del Catastro (solo hay en España).
     if (nombre === "clic" && !$("capa-catastro").checked) { $("capa-catastro").checked = true; mapa.capa("catastro", true); }
@@ -118,7 +120,24 @@ function proponer(parcela, texto) {
   $("mapa-usar").focus({ preventScroll: true });
 }
 
-function iniciarMapa() {
+// Leaflet (la librería del mapa) solo se descarga cuando hace falta el mapa: en las portadas
+// que empiezan por la referencia catastral, no frena la carga de la página.
+let cargaLeaflet = null;
+function cargarLeaflet() {
+  if (window.L) return Promise.resolve();
+  cargaLeaflet ||= new Promise((ok, mal) => {
+    const s = document.createElement("script");
+    s.src = new URL("../vendor/leaflet/leaflet.js", import.meta.url).href;
+    s.onload = ok;
+    s.onerror = () => { cargaLeaflet = null; mal(new ErrorLurra("servicio", { servicio: "Leaflet" })); };
+    document.head.append(s);
+  });
+  return cargaLeaflet;
+}
+
+async function iniciarMapa() {
+  if (mapa) return;
+  try { await cargarLeaflet(); } catch (e) { avisar("mapa-error", mensajeError(e)); throw e; }
   if (mapa) return;
   const datos = $("herramienta").dataset;
   const vista = (datos.vista || "").split(",").map(Number);
@@ -359,8 +378,8 @@ function iniciar() {
   $("dib-terminar").addEventListener("click", () => { if (!mapa.terminar()) avisar("mapa-error", t("error.pocos_puntos")); });
   $("dib-deshacer").addEventListener("click", () => { mapa.deshacer(); $("mapa-usar").hidden = true; avisar("mapa-seleccion", ""); });
   $("dib-borrar").addEventListener("click", () => { mapa.borrar(); candidata = null; $("mapa-usar").hidden = true; avisar("mapa-seleccion", ""); avisar("mapa-error", ""); });
-  document.querySelectorAll("[name=fondo]").forEach((r) => r.addEventListener("change", () => r.checked && mapa.capa(r.value, true)));
-  $("capa-catastro").addEventListener("change", (ev) => mapa.capa("catastro", ev.target.checked));
+  document.querySelectorAll("[name=fondo]").forEach((r) => r.addEventListener("change", () => r.checked && mapa?.capa(r.value, true)));
+  $("capa-catastro").addEventListener("change", (ev) => mapa?.capa("catastro", ev.target.checked));
 
   $("dib-fichero").addEventListener("change", async (ev) => {
     const f = ev.target.files[0];
@@ -372,6 +391,7 @@ function iniciar() {
       const problema = validarRecinto(geom);
       if (problema) throw new ErrorLurra(problema);
       turnoMapa++;
+      await iniciarMapa();
       mapa.borrar();
       proponer({ id: f.name.replace(/\.[^.]+$/, ""), origen: "fichero", geom }, t("app.fichero.leido", { area: L.ha(medir(geom).areaM2) }));
     } catch (e) {
@@ -412,6 +432,7 @@ function iniciar() {
       }
     }
     try {
+      await iniciarMapa();
       const res = await buscarLugar(q, L.codigo);
       if (turno !== turnoMapa) return;
       if (!res.length) return avisar("mapa-error", t("app.mapa.sin_resultados"));

@@ -20,8 +20,22 @@ const entorno = { GeoTIFF: null };
 export function configurarSatelite(opciones) {
   Object.assign(entorno, opciones);
 }
-function geotiff() {
-  const g = entorno.GeoTIFF || globalThis.GeoTIFF;
+// La librería GeoTIFF (unos 100 kB) solo hace falta para la historia por satélite: en el
+// navegador se descarga la primera vez que se pide, para no frenar la carga de la página.
+let cargaGeoTIFF = null;
+function cargarScriptGeoTIFF() {
+  if (typeof document === "undefined") return Promise.resolve(null);
+  cargaGeoTIFF ||= new Promise((ok) => {
+    const s = document.createElement("script");
+    s.src = new URL("../vendor/geotiff/geotiff.js", import.meta.url).href;
+    s.onload = () => ok(globalThis.GeoTIFF || null);
+    s.onerror = () => { cargaGeoTIFF = null; ok(null); };
+    document.head.append(s);
+  });
+  return cargaGeoTIFF;
+}
+async function geotiff() {
+  const g = entorno.GeoTIFF || globalThis.GeoTIFF || (await cargarScriptGeoTIFF());
   if (!g) throw new ErrorLurra("servicio", { servicio: "GeoTIFF" });
   return g;
 }
@@ -167,7 +181,7 @@ export function ndviDeVentanas({ rojo, nir, scl, mascara, propiedades }) {
 
 async function abrir(href, nivel) {
   // Bloques de 16 kB: la cabecera de cada imagen cabe en uno y no se descarga de más.
-  const tiff = await geotiff().fromUrl(href.includes("://") ? href : `https://${href}`, { cacheSize: 60, blockSize: 16384 });
+  const tiff = await (await geotiff()).fromUrl(href.includes("://") ? href : `https://${href}`, { cacheSize: 60, blockSize: 16384 });
   const base = await tiff.getImage(0);
   const img = nivel ? await tiff.getImage(nivel) : base;
   const [ox, oy] = base.getOrigin();
