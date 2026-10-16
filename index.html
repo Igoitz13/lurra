@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin">
-<title>Lurra: informe gratuito de una finca rústica por su referencia catastral</title>
-<meta name="description" content="Escribe la referencia catastral o señala la parcela en el mapa y mira al momento si es inundable, si está en Red Natura 2000, su pendiente, su uso SIGPAC y su historia por satélite. Gratis y sin registro.">
+<title>Catastro de fincas rústicas: informe gratis de tu parcela | Lurra</title>
+<meta name="description" content="Escribe la referencia catastral o pulsa la parcela en el mapa: superficie, cultivos, zona inundable, Red Natura 2000, pendiente y satélite. Gratis y sin registro.">
 <link rel="canonical" href="https://igoitz13.github.io/lurra/">
 <link rel="alternate" hreflang="es" href="https://igoitz13.github.io/lurra/">
 <link rel="alternate" hreflang="ca" href="https://igoitz13.github.io/lurra/ca.html">
@@ -58,18 +58,19 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lurra">
 <meta property="og:locale" content="es_ES">
-<meta property="og:title" content="Lurra: informe gratuito de una finca rústica por su referencia catastral">
-<meta property="og:description" content="Escribe la referencia catastral o señala la parcela en el mapa y mira al momento si es inundable, si está en Red Natura 2000, su pendiente, su uso SIGPAC y su historia por satélite. Gratis y sin registro.">
+<meta property="og:title" content="Catastro de fincas rústicas: informe gratis de tu parcela | Lurra">
+<meta property="og:description" content="Escribe la referencia catastral o pulsa la parcela en el mapa: superficie, cultivos, zona inundable, Red Natura 2000, pendiente y satélite. Gratis y sin registro.">
 <meta property="og:url" content="https://igoitz13.github.io/lurra/">
 <meta property="og:image" content="https://igoitz13.github.io/lurra/img/compartir.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="img/mapa.svg" as="image" fetchpriority="high">
 <link rel="preload" href="vendor/fuentes/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="vendor/fuentes/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="estilo.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Lurra","url":"https://igoitz13.github.io/lurra/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"es","description":"Escribe la referencia catastral o señala la parcela en el mapa y mira al momento si es inundable, si está en Red Natura 2000, su pendiente, su uso SIGPAC y su historia por satélite. Gratis y sin registro.","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Lurra","url":"https://igoitz13.github.io/lurra/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"es","description":"Escribe la referencia catastral o pulsa la parcela en el mapa: superficie, cultivos, zona inundable, Red Natura 2000, pendiente y satélite. Gratis y sin registro.","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Dónde encuentro la referencia catastral?","acceptedAnswer":{"@type":"Answer","text":"En el recibo del IBI, en la escritura y en la nota simple. Si no la tienes, abre la pestaña «Buscar en el mapa», acércate a la finca y haz clic sobre ella: el contorno sale del Catastro o del SIGPAC."}},{"@type":"Question","name":"¿Cuánto cuesta?","acceptedAnswer":{"@type":"Answer","text":"Nada. El servicio está en fase de pruebas y los informes son gratuitos y sin límite."}},{"@type":"Question","name":"¿Sirve para una finca en el País Vasco o en Navarra?","acceptedAnswer":{"@type":"Answer","text":"Sí. Sus catastros son forales y la referencia no funciona aquí, pero puedes elegir la parcela con un clic en el mapa: el recinto se toma del SIGPAC, que cubre toda España."}},{"@type":"Question","name":"Si el informe dice que no es inundable, ¿puedo estar tranquilo?","acceptedAnswer":{"@type":"Answer","text":"No del todo. La cartografía oficial solo cubre los tramos de río estudiados. «No» significa que no hay lámina de inundación cartografiada sobre la parcela, no que el riesgo sea cero. Ante la duda, pregunta al organismo de cuenca."}},{"@type":"Question","name":"¿Por qué tarda la parte del satélite?","acceptedAnswer":{"@type":"Answer","text":"Porque tu navegador lee, mes a mes, el trozo de cada imagen de Sentinel-2 que cubre la finca: entre 80 y 200 MB en total, según la zona, en uno o dos minutos. El resto del informe sale en segundos, y puedes parar la lectura cuando quieras: se empieza por los años más recientes."}},{"@type":"Question","name":"¿Puedo guardar el informe?","acceptedAnswer":{"@type":"Answer","text":"Sí: con «Guardar en PDF o imprimir» tu navegador genera el PDF. También puedes copiar el enlace para volver a generarlo o descargar los datos."}},{"@type":"Question","name":"¿Y si la finca está en otro país?","acceptedAnswer":{"@type":"Answer","text":"También sirve. Dibuja el recinto en el mapa o sube un fichero GeoJSON o KML: tendrás el relieve, la cobertura del suelo, los espacios protegidos de la base mundial Protected Planet, una primera orientación de inundabilidad con un modelo global y la historia por satélite. Los datos catastrales, las zonas inundables oficiales y el uso SIGPAC solo existen para España."}}]}</script>
 <script src="config.js"></script>
 </head>
@@ -267,6 +268,7 @@
     <p class="bloque__entrada">Textos breves sobre qué comprobar en una finca rústica antes de comprarla, y dónde está cada dato.</p>
   </div>
   <ul class="indice">
+    <li><a href="guia/catastro-finca-rustica.html"><strong>Catastro de una finca rústica: cómo consultarlo gratis y qué datos da</strong><span>Dónde se consulta el Catastro de una parcela rústica, qué datos son públicos, qué significan los cultivos y qué no dice.</span><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
     <li><a href="guia/comprar-finca-rustica.html"><strong>Qué comprobar antes de comprar una finca rústica</strong><span>Una lista ordenada de comprobaciones: papeles, superficie, acceso, agua, protecciones e historia del terreno.</span><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
     <li><a href="guia/construir-en-suelo-rustico.html"><strong>¿Se puede construir en una finca rústica?</strong><span>Qué suele permitirse en suelo rústico, quién lo decide, qué papeles pedir y qué pasa con las casas ya construidas.</span><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
     <li><a href="guia/finca-inundable.html"><strong>Cómo saber si una finca rústica es inundable</strong><span>Qué son las zonas inundables a 10, 100 y 500 años, dónde se consultan y qué límites tiene la cartografía oficial.</span><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
@@ -318,8 +320,7 @@
   <p class="pie__fuentes">Elaborado con datos públicos del Catastro, el FEGA (SIGPAC), el MITECO, el IGN y el programa Copernicus; fuera de España, también de Protected Planet y OpenStreetMap. Esos organismos no avalan ni revisan los informes.</p>
 </footer>
 
-<script src="vendor/leaflet/leaflet.js"></script>
-<script src="vendor/geotiff/geotiff.js"></script>
+
 <script type="module" src="js/app.js"></script>
 <script src="idiomas.js"></script>
 <script src="web.js"></script>
