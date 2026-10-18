@@ -247,6 +247,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--tinta); }
 .zona-informe > .sat-control { width: min(100% - 2 * var(--lado), 54rem); }
 .sat-avance { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; background: #fff; border: 1px solid var(--tinta); padding: .7rem 1rem; font-size: 1rem; }
 .sat-avance progress { flex: 1 1 10rem; height: .6rem; accent-color: var(--verde); }
+.sat-espera { margin: .4rem 0 0; font-size: .9rem; }
 
 /* ---------- informe */
 .informe { position: relative; max-width: 54rem; margin: 2rem auto 0; padding: clamp(1.25rem, 4vw, 2.75rem); font-size: 1.06rem; line-height: 1.5; background: #fff; border: 1px solid var(--tinta); }
@@ -335,6 +336,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--tinta); }
 .fuentes ul { margin: 0 0 .8rem; padding-inline-start: 1.1rem; }
 .fuentes h2 { font-size: 1.6em; }
 .informe__traduccion { margin-top: 1.2rem; font-size: .85em; color: var(--tinta-3); }
+.informe__opinion { margin-top: 1rem; padding: .7rem 1rem; border: 1px solid var(--tinta); background: #fff; }
 .informe__pie { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem 1rem; margin-top: 1.5rem; padding-top: .6rem; border-top: 1px solid var(--tinta); font: 400 .72em/1.5 var(--mono); color: var(--tinta-3); }
 
 /* ---------- bloques de la portada */
@@ -614,6 +616,7 @@ main { counter-reset: bloque; }
 }
 @media print {
   .informe__traduccion { font-size: 8.5pt; }
+  .informe__opinion { font-size: 8.5pt; padding: 0; border: 0; }
   .g-ancha .informe h1 { font-size: 22pt; }
   .g-ancha .informe h2 { font-size: 14.5pt; }
 }
