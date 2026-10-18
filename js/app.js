@@ -192,7 +192,7 @@ async function iniciarMapa() {
 }
 
 // ---------------------------------------------------------------------- informe
-const PASOS = ["parcela", "relieve", "inundacion", "proteccion", "sigpac", "cobertura", "satelite"];
+const PASOS = ["parcela", "relieve", "inundacion", "proteccion", "sigpac", "urbanismo", "cobertura", "satelite"];
 function pintarProgreso(estados) {
   const lista = $("progreso-pasos");
   lista.replaceChildren(...PASOS.filter((p) => estados[p]).map((p) =>
@@ -212,7 +212,7 @@ function enlaceInforme(parcela) {
 
 function pintar(res) {
   const cont = $("informe");
-  cont.replaceChildren(pintarInforme(res, L, { sitio: cfg.marca || "Lurra" }));
+  cont.replaceChildren(pintarInforme(res, L, { sitio: cfg.marca || "Lurra", correo: cfg.email || "" }));
 }
 
 /** Botón para leer (o terminar de leer) la historia por satélite cuando no se hace sola. */
@@ -247,7 +247,7 @@ async function lanzarSatelite(res, ctrl) {
   const parar = h("button", { type: "button", class: "boton boton--secundario boton--pequeno", onclick: () => lectura.abort() }, t("app.sat.parar"));
   const texto = h("span", {}, t("app.sat.avance", { hechas: 0, total: "…" }));
   const barra = h("progress", { max: 1, value: 0 });
-  zona.replaceChildren(h("div", { class: "sat-avance" }, texto, barra, parar));
+  zona.replaceChildren(h("div", { class: "sat-avance" }, texto, barra, parar), h("p", { class: "sat-espera tenue" }, t("app.sat.espera")));
   zona.hidden = false;
   // Al reanudar una lectura parada, el apartado deja de decir «se detuvo».
   if (res.satelite && res.satelite.parcial) {

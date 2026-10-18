@@ -283,7 +283,17 @@ function minuscula(texto, idioma) {
 }
 
 /** Devuelve el elemento con el informe completo. `sitio` es el nombre que firma el pie. */
-export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
+/** Clasificación urbanística del SIU en una línea, o null si no se consultó. */
+function urbanismoTexto(res, L) {
+  const u = res.urbanismo;
+  if (!u) return null;
+  if (u.estado !== "ok") return L.t("inf.urb.error");
+  if (!u.clases.length) return L.t("inf.urb.sin_dato");
+  if (u.clases.length === 1 && u.clases[0].pct >= 99.5) return L.t(`inf.urb.${u.clases[0].clase}`);
+  return u.clases.map((c) => `${L.t(`inf.urb.${c.clase}`)} ${L.num(c.pct)} %`).join(" · ");
+}
+
+export function pintarInforme(res, L, { sitio = "Lurra", correo = "" } = {}) {
   const { t, num, m2, area } = L;
   const p = res.parcela, d = p.datos || {};
   const es = res.ambito === "es";
@@ -315,6 +325,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
     [t("inf.dato.superficie"), area(p.areaM2)],
     cultivos.length ? [t("inf.dato.cultivo"), [...new Set(cultivos)].join(", ")] : null,
     usos ? [t("inf.dato.uso_sigpac"), usos] : null,
+    urbanismoTexto(res, L) && res.urbanismo.estado === "ok" && res.urbanismo.clases.length ? [t("inf.f.urbanismo"), urbanismoTexto(res, L)] : null,
     cob ? [t("inf.dato.cobertura"), cob] : null,
     rel.estado === "ok" ? [t("inf.dato.altitud"), `${num(rel.altitudMin)}–${num(rel.altitudMax)} m`] : null,
     rel.estado === "ok" ? [t("inf.dato.pendiente"), `${num(rel.pendienteMedia)} %`] : null,
@@ -341,6 +352,8 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
   }
   filasFicha.push([t("inf.f.perimetro"), `${num(p.perimetroM)} m`]);
   if (p.fechaAlta) filasFicha.push([t("inf.f.alta"), L.dia(p.fechaAlta)]);
+  const urb = urbanismoTexto(res, L);
+  if (urb) filasFicha.push([t("inf.f.urbanismo"), urb]);
   const s1 = seccion(1, t(p.origen === "catastro" ? "inf.s1" : "inf.s1.recinto"), tabla(null, filasFicha, { clase: "tabla--ficha" }));
   if ((d.subparcelas || []).length) {
     s1.appendChild(h("h3", {}, t("inf.f.sub.titulo")));
@@ -350,6 +363,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
   if (p.origen === "dibujo" || p.origen === "fichero") s1.appendChild(nota(t("inf.f.nota_dibujo")));
   if (p.origen === "sigpac") s1.appendChild(nota(t("inf.f.nota_sigpac")));
   if (p.origen === "catastro" && p.rustica === false) s1.appendChild(aviso(t("inf.f.nota_urbana")));
+  if (res.urbanismo && res.urbanismo.estado === "ok" && res.urbanismo.clases.length) s1.appendChild(nota(t("inf.urb.nota")));
   doc.appendChild(s1);
 
   // ---- 2. relieve
@@ -450,6 +464,7 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
     es ? t("inf.fu.sigpac", { fecha }) : null,
     es ? t("inf.fu.snczi") : null,
     es ? t("inf.fu.iepnb") : res.ambito === "ue" ? t("inf.fu.eea") : null,
+    res.urbanismo && res.urbanismo.estado === "ok" ? t("inf.fu.siu") : null,
     hayModelo ? t("inf.fu.glofas") : null,
     !es && res.proteccion ? t("inf.fu.wdpa", { fecha: L.mesAno(res.generado.slice(0, 10)) }) : null,
     es ? t("inf.fu.ign") : null,
@@ -461,6 +476,11 @@ export function pintarInforme(res, L, { sitio = "Lurra" } = {}) {
   ].filter(Boolean);
   doc.appendChild(h("section", { class: "apartado fuentes" }, h("h2", {}, t("inf.fuentes")), h("ul", {}, fuentes.map((f) => h("li", {}, f))), h("p", {}, t("inf.limites"))));
   if (L.traducido) doc.appendChild(h("p", { class: "informe__traduccion" }, t("inf.traduccion")));
+  if (correo) {
+    // «¿Te ha servido…? Escribe a {correo}»: el correo va como enlace.
+    const [antes, despues = ""] = t("inf.opinion", { correo: "\u0000" }).split("\u0000");
+    doc.appendChild(h("p", { class: "informe__opinion" }, antes, h("a", { href: `mailto:${correo}` }, correo), despues));
+  }
   doc.appendChild(h("footer", { class: "informe__pie" }, h("span", {}, t("inf.generado", { fecha })), h("span", {}, t("inf.pagina_gratis", { sitio }))));
   return doc;
 }

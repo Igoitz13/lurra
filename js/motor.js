@@ -11,6 +11,7 @@ import * as proteccion from "./proteccion.js";
 import * as relieve from "./relieve.js";
 import * as cobertura from "./cobertura.js";
 import * as satelite from "./satelite.js";
+import * as urbanismo from "./urbanismo.js";
 import * as mundo from "./mundo.js";
 
 export const VERSION = 3;
@@ -105,11 +106,13 @@ export async function generarInforme(parcela, { alAvance = () => {}, senal = nul
       const r = await sigpac.consultar(ctx, opciones);
       return { estado: "ok", recintos: r.recintos.map(({ geom, ...resto }) => resto), cubiertoPct: r.cubiertoPct };
     }) : null,
+    // Clasificación urbanística orientativa del Sistema de Información Urbana (solo España).
+    urbanismo: ambito === "es" ? paso("urbanismo", alAvance, () => urbanismo.analizar(ctx, opciones)) : null,
     cobertura: ambito !== "es" ? paso("cobertura", alAvance, () => cobertura.analizar(ctx, opciones)) : null,
     // Fuera de España el recinto no trae municipio: se pregunta por el nombre del lugar.
     lugar: ambito !== "es" ? mundo.lugar(ctx.medida.centroLonLat, idioma, opciones) : null,
   };
-  const [rel, prot, inun, sig, cob, lugar] = await Promise.all(Object.values(tareas));
+  const [rel, prot, inun, sig, urb, cob, lugar] = await Promise.all(Object.values(tareas));
 
   const { geom, recintosSigpac, ...resto } = parcela;
   return {
@@ -131,6 +134,7 @@ export async function generarInforme(parcela, { alAvance = () => {}, senal = nul
     proteccion: Array.isArray(prot) ? prot : prot ? proteccion.capasDe(ambito).map((id) => ({ id, nivel: "ambar", estado: "error", afecta: false, m2: 0, pct: 0, elementos: [] })) : null,
     inundacion: inun,
     sigpac: sig,
+    urbanismo: urb,
     cobertura: cob,
     satelite: { estado: area < AREA_MIN_SATELITE_M2 ? "pequena" : "pendiente", minimoM2: AREA_MIN_SATELITE_M2 },
   };
