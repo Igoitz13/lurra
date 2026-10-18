@@ -263,6 +263,44 @@ function usoTexto(codigo, L) {
   return texto === clave ? codigo || "–" : texto;
 }
 
+// Cultivos del Catastro (códigos de su nomenclatura de calificaciones) agrupados para poder
+// traducirlos. Fuera de los idiomas castellanos se da el grupo traducido y, entre paréntesis, el
+// nombre oficial; los códigos que no están aquí se dejan como los da el Catastro.
+const GRUPO_CULTIVO = {};
+for (const [grupo, codigos] of Object.entries({
+  labor_secano: "C- CC CE CG CS CN CQ CV", labor_regadio: "CR CF CB CK", huerta: "HR HB HE HK HS",
+  pastos: "E- EE EO CP", prados: "PD PR PH PP", frutales: "F- FR FK FA TF R- RR G- GR PT CH",
+  frutos_secos: "AM AR AV", agrios: "NR NB NK", olivar: "O- OR OZ TO", vina: "V- VR VO VP VB VK VS VV",
+  monte_bajo: "MB", matorral: "MT AT", mezcladas: "MF", coniferas: "MM MR MP KY MA MS",
+  frondosas: "FE FS FC FG FH KC KE KG KS SC SE SS ZE ZS", eucalipto: "EU", ribera: "RI MI",
+  invernadero: "IF IH IN", improductivo: "I- ES", agua: "HC HG", via: "FF VT", urbano: "U-", edificaciones: "EA",
+})) for (const c of codigos.split(" ")) GRUPO_CULTIVO[c] = grupo;
+
+const castellano = (L) => /^es\b/.test(L.codigo || "");
+
+export function cultivoTexto(x, L, conCodigo = false) {
+  if (!x || !x.cultivo) return "";
+  const codigo = String(x.codigo || "").trim().toUpperCase();
+  const grupo = GRUPO_CULTIVO[codigo];
+  if (castellano(L) || !grupo) return conCodigo && codigo ? `${x.cultivo} (${codigo})` : x.cultivo;
+  return `${L.t(`cul.${grupo}`)} (${conCodigo && codigo ? `${x.cultivo}, ${codigo}` : x.cultivo})`;
+}
+
+// Uso principal del inmueble según el Catastro («Agrario», «Residencial»…).
+const USO_CATASTRO = {
+  agrario: "agrario", residencial: "residencial", industrial: "industrial", oficinas: "oficinas", comercial: "comercial",
+  deportivo: "deportivo", espectaculos: "espectaculos", "ocio y hosteleria": "ocio", "sanidad y beneficencia": "sanidad",
+  cultural: "cultural", religioso: "religioso", "almacen-estacionamiento": "almacen", "almacen estacionamiento": "almacen",
+  "edificio singular": "singular",
+};
+
+export function usoCatastro(uso, L) {
+  if (!uso || castellano(L)) return uso || "";
+  const n = String(uso).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+  const k = USO_CATASTRO[n] || (/sin edificar/.test(n) ? "suelo" : null);
+  return k ? L.t(`inf.f.uso.${k}`) : uso;
+}
+
 function seccion(n, texto, ...hijos) {
   return h("section", { class: "apartado", id: `s${n}` }, h("h2", {}, h("span", { class: "num-apartado" }, `${n}.`), " ", texto), hijos);
 }
@@ -319,7 +357,7 @@ export function pintarInforme(res, L, { sitio = "Lurra", correo = "" } = {}) {
   // ---- resumen con mapa
   const rel = res.relieve || {};
   const usos = es && res.sigpac && res.sigpac.estado === "ok" ? [...new Set(res.sigpac.recintos.slice(0, 3).map((r) => usoTexto(r.uso, L)))].join(", ") : null;
-  const cultivos = (d.subparcelas || []).slice(0, 3).map((x) => x.cultivo).filter(Boolean);
+  const cultivos = (d.subparcelas || []).slice(0, 3).map((x) => cultivoTexto(x, L)).filter(Boolean);
   const cob = !es && res.cobertura && res.cobertura.estado === "ok" ? res.cobertura.clases.slice(0, 2).map((c) => t(`cob.${c.clase}`)).join(", ") : null;
   const filasResumen = [
     [t("inf.dato.superficie"), area(p.areaM2)],
@@ -341,7 +379,7 @@ export function pintarInforme(res, L, { sitio = "Lurra", correo = "" } = {}) {
   if (p.refcat) filasFicha.push([t("inf.f.refcat"), p.refcat]);
   if (d.localizacion) filasFicha.push([t("inf.f.localizacion"), d.localizacion]);
   else if (p.lugar) filasFicha.push([t("inf.f.localizacion"), p.lugar.texto]);
-  if (d.clase) filasFicha.push([t("inf.f.clase"), [t(`inf.f.clase.${d.clase}`), d.uso].filter(Boolean).join(" · ")]);
+  if (d.clase) filasFicha.push([t("inf.f.clase"), [t(`inf.f.clase.${d.clase}`), usoCatastro(d.uso, L)].filter(Boolean).join(" · ")]);
   filasFicha.push([t("inf.f.origen"), t(`inf.f.origen.${p.origen}`)]);
   if (p.areaCatastroM2) {
     filasFicha.push([t("inf.f.sup_catastral"), m2(p.areaCatastroM2)]);
@@ -358,7 +396,7 @@ export function pintarInforme(res, L, { sitio = "Lurra", correo = "" } = {}) {
   if ((d.subparcelas || []).length) {
     s1.appendChild(h("h3", {}, t("inf.f.sub.titulo")));
     s1.appendChild(tabla([t("inf.f.sub.subparcela"), t("inf.f.sub.cultivo"), t("inf.f.sub.intensidad"), t("inf.f.sub.superficie")],
-      d.subparcelas.map((x) => [x.subparcela ?? "–", x.cultivo ? `${x.cultivo}${x.codigo ? ` (${x.codigo})` : ""}` : "–", x.intensidad ?? "–", x.superficieM2 != null ? m2(x.superficieM2) : "–"]), { numericas: [3] }));
+      d.subparcelas.map((x) => [x.subparcela ?? "–", cultivoTexto(x, L, true) || "–", x.intensidad ?? "–", x.superficieM2 != null ? m2(x.superficieM2) : "–"]), { numericas: [3] }));
   }
   if (p.origen === "dibujo" || p.origen === "fichero") s1.appendChild(nota(t("inf.f.nota_dibujo")));
   if (p.origen === "sigpac") s1.appendChild(nota(t("inf.f.nota_sigpac")));
