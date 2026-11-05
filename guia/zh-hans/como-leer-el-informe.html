@@ -107,6 +107,7 @@
 <h2>2. 地形与交通</h2>
 <p>海拔、坡度和坡向，依据 IGN（国家地理研究所）5 m分辨率的数字地形模型。坡度以百分比表示：20%即每100 m有20 m的高差。在西班牙以外，报告使用精度较低的全球模型，并会注明。</p>
 <p>下面列出 OpenStreetMap 上离地块最近的设施，适用于任何国家：机耕路和铺装道路、村镇、诊所、药店、学校和电力线路，距离均为从地块边界起算的直线距离。如果地块旁边没有任何已标绘的道路，红绿灯会提示您：请问清从哪里进入，以及是否有通行地役权。</p>
+<p>此外，报告还会初步评估地块是否适合建光伏电站：太阳辐射和预计发电量、坡度、坡向、面积和大致装机容量（兆瓦）、最近的变电站和高压线，以及是否涉及保护区或洪水区。最关键的电网剩余容量，需要向配电公司询问。详见指南<a href="alquilar-finca-placas-solares.html">出租土地建光伏电站</a>。</p>
 
 <h2>3. 水文</h2>
 <p>地块落在10年、100年和500年一遇官方洪水区内的面积。“否”表示宗地上没有已制图的淹没范围。<a href="finca-inundable.html">关于洪水区土地的指南</a>说明了其中的局限。西班牙以外没有统一的官方地图：报告用一个全球100年一遇河流洪水模型（Copernicus 的 GloFAS）给出初步参考，网格约150 m，只覆盖大河。</p>
@@ -115,13 +116,15 @@
 <h2>4. 环境保护</h2>
 <p>与地块相交的 Natura 2000 网络区域和自然保护地。详见<a href="red-natura-2000.html">关于 Natura 2000 网络的指南</a>。在西班牙以外，报告查询全球保护地数据库 Protected Planet，其中收录各国上报的保护类型。</p>
 
-<h2>5. 野火和公有土地</h2>
+<h2>5. 火灾、公有土地和地役权</h2>
 <p>根据卫星测绘的过火区域，列出曾经波及这块地的野火：在欧洲及其周边地区，数据来自欧洲的 EFFIS 系统，始于2000年；在世界其他地方，数据来自全球的 GWIS 系统，始于2012年。报告给出火灾日期、过火面积以及地块被波及的部分。这一点很重要，因为在西班牙，过火的林地30年内不得改变用途。小型火灾可能没有记录。</p>
 <p>在西班牙，报告还会叠加查询传统牧道（vías pecuarias，分为 cañada、cordel 和 vereda 等类型，属于公共产权，不得围栏或占用）以及公有林和公益林（monte de utilidad pública）。在美国，则查询 PAD-US 数据库中的公有土地。这些都只是参考：传统牧道的实际宽度和林地的边界，以官方划界（deslinde）为准。</p>
+<p>最后是保护带：到最近的河流或溪流、高速公路、道路、海岸和高压线的距离，地块落在哪一条法定保护带内，以及这意味着什么（河岸管控区、道路建筑红线、海岸保护地役带……）。在西班牙，地块涉及的每一条保护带都会显示在红绿灯中，并附上应向主管机构提出的问题。具体数字见指南<a href="distancias-rios-carreteras-costa.html">土地与河流、道路和海岸的法定距离</a>。</p>
 
 <h2>6. 土地用途与土壤</h2>
 <p>宗地内的 SIGPAC（农业地块地理信息系统）图斑，包括农业管理部门认定的用途、坡度和灌溉系数。在西班牙以外，显示根据卫星影像估算的地表覆盖。</p>
 <p>在任何国家，报告还会根据全球模型 SoilGrids 给出表层30 cm的土壤类型：质地（砂土、壤土、黏土……）、pH 和有机质。这是250 m分辨率的参考数据，不是土壤检测。</p>
+<p>接着是地块所在位置近10年的气候（降水、气温、霜冻、低温小时数和积温，附每月数据表），以及对十二种作物的评估：“适合”“有限制”或“不适合”，并说明原因。数据来自 Copernicus 的 ERA5 再分析资料，网格为9至25 km：在山谷和山坡上，实际气候可能有所不同。指南<a href="que-plantar-segun-clima.html">根据气候决定土地上种什么</a>对此有说明。</p>
 
 <h2>7. 卫星影像记录</h2>
 <p>图表显示2017年以来逐月的植被活力（NDVI 指数），使用 Sentinel-2 影像。数值在0到1之间：接近0表示裸土、水体或岩石；高于0.6表示茂密、旺盛的植被。正常情况是随季节每年重复的起伏。</p>
@@ -143,7 +146,7 @@
 
 <nav class="otras" aria-label="其他指南">
 <h2>其他指南</h2>
-<ul class="indice"><li><a href="finca-inundable.html"><strong>如何判断农村土地是否处于洪水区</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="red-natura-2000.html"><strong>位于 Natura 2000 网络内的土地：意味着什么，如何核查</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="comprar-finca-rustica.html"><strong>购买农村土地前要核查什么</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="referencia-catastral.html"><strong>如何找到农村土地的地籍编号</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="construir-en-suelo-rustico.html"><strong>农村土地上可以建房吗？</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="nota-simple-finca-rustica.html"><strong>农村土地的产权登记摘要（nota simple）：如何申请，如何阅读</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="sigpac.html"><strong>SIGPAC 是什么：有什么用，如何查询宗地</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="catastro-finca-rustica.html"><strong>农村土地的 Catastro：如何免费查询，能提供哪些数据</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="valor-catastral-finca-rustica.html"><strong>农村土地的地籍价值：是什么，怎么查，有什么用</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li></ul>
+<ul class="indice"><li><a href="finca-inundable.html"><strong>如何判断农村土地是否处于洪水区</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="red-natura-2000.html"><strong>位于 Natura 2000 网络内的土地：意味着什么，如何核查</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="comprar-finca-rustica.html"><strong>购买农村土地前要核查什么</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="referencia-catastral.html"><strong>如何找到农村土地的地籍编号</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="construir-en-suelo-rustico.html"><strong>农村土地上可以建房吗？</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="nota-simple-finca-rustica.html"><strong>农村土地的产权登记摘要（nota simple）：如何申请，如何阅读</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="sigpac.html"><strong>SIGPAC 是什么：有什么用，如何查询宗地</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="catastro-finca-rustica.html"><strong>农村土地的 Catastro：如何免费查询，能提供哪些数据</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="valor-catastral-finca-rustica.html"><strong>农村土地的地籍价值：是什么，怎么查，有什么用</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="alquilar-finca-placas-solares.html"><strong>出租土地建光伏电站：需要了解什么</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="distancias-rios-carreteras-costa.html"><strong>土地与河流、道路和海岸的法定距离</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a href="que-plantar-segun-clima.html"><strong>根据气候决定土地上种什么</strong><svg class="ico ico--flecha" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li></ul>
 </nav>
 
 <div class="llamada">
