@@ -715,3 +715,13 @@ main { counter-reset: bloque; }
 .mp__datos summary { cursor: pointer; font-weight: 600; margin: .4rem 0; }
 .mp__tabla td.num, .mp__tabla th.num { text-align: end; }
 #guias .otras-ccaa { margin-top: 1.5rem; line-height: 1.7; }
+
+/* Placas solares y cultivos: valoración con símbolo y color (el texto siempre acompaña) */
+.veredicto { display: inline-block; margin: .3rem 0 .8rem; padding: .35rem .8rem; border-inline-start: 4px solid; }
+.veredicto--buena { color: var(--verde-oscuro); background: var(--verde-fondo); }
+.veredicto--posible { color: var(--ambar); background: var(--ambar-fondo); }
+.veredicto--dificil { color: var(--rojo); background: var(--rojo-fondo); }
+.marca-nivel { display: inline-block; min-width: 1.1em; font-weight: 700; text-align: center; }
+.marca-nivel--ok { color: var(--verde); }
+.marca-nivel--duda { color: var(--ambar); }
+.marca-nivel--mal { color: var(--rojo); }
