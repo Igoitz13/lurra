@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://igoitz13.github.io/lurra/sitemap.xml

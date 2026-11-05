@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hans" class="g-ancha g-cjk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin">
+<title>隐私 · Lurra</title>
+<meta name="description" content="Lurra 不收集个人数据：报告在您的浏览器中计算。本页说明会查询哪些服务，以及您的设备上会保存什么。">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://igoitz13.github.io/lurra/guia/zh-hans/privacidad.html">
+<meta name="theme-color" content="#1a1a17">
+<link rel="icon" href="../../img/icono.svg" type="image/svg+xml">
+<link rel="icon" href="../../img/icono-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="../../img/icono-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="../../img/icono-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="../../img/icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../img/icono-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lurra">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="隐私 · Lurra">
+<meta property="og:description" content="Lurra 不收集个人数据：报告在您的浏览器中计算。本页说明会查询哪些服务，以及您的设备上会保存什么。">
+<meta property="og:url" content="https://igoitz13.github.io/lurra/guia/zh-hans/privacidad.html">
+<meta property="og:image" content="https://igoitz13.github.io/lurra/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../../img/mapa.svg" as="image" fetchpriority="high">
+<link rel="preload" href="../../vendor/fuentes/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../vendor/fuentes/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../estilo.css">
+<script src="../../config.js"></script>
+</head>
+<body>
+<!-- BORRADOR redactado sin asesoramiento jurídico: revísalo con una gestoría o un abogado antes de cobrar por el servicio. -->
+<a class="salto" href="#contenido">跳到正文</a>
+<header class="cabecera">
+  <a class="marca" href="../../zh-hans.html" aria-label="Lurra 首页"><img src="../../img/icono.svg" alt="" width="32" height="32">Lurra</a>
+  <nav aria-label="页面导航">
+    <a href="../../zh-hans.html#herramienta">生成报告</a>
+    <a href="../../guia/zh-hans/">指南</a>
+  </nav>
+</header>
+<main id="contenido">
+<div class="cima cima--texto">
+  <div class="cima__titulo">
+    <nav class="migas" aria-label="页面路径"><a href="../../zh-hans.html">首页</a></nav>
+    <h1>隐私</h1>
+    <p class="entrada">最后更新：2026年11月。</p>
+  </div>
+</div>
+<div class="legal">
+<h2>简而言之</h2>
+<p>Lurra 没有自己的服务器，没有用户账户，也没有任何会向其作者发送信息的表单。它不使用 Cookie，也没有广告；字体和图标都托管在本网站上。您查询的地籍编号或地块不会传到 Lurra：您的浏览器直接向公共数据服务查询，并在您的设备上完成计算。</p>
+
+<h2>各方能看到什么</h2>
+<p><strong>网站托管服务。</strong>网页由<span data-dato="alojamiento">一家静态网页托管服务商</span>提供。和所有网络服务器一样，它在您下载网页时会收到您的 IP 地址和连接的技术数据。Lurra 的作者无法访问这些日志。</p>
+<p><strong>数据服务。</strong>为了生成报告和绘制地图，您的浏览器会连接以下机构和公司的服务，它们会收到您的 IP 地址以及您正在查询的区域或编号：</p>
+<ul>
+<li>Dirección General del Catastro（西班牙地籍总局，catastro.meh.es）。</li>
+<li>Fondo Español de Garantía Agraria（西班牙农业保障基金），SIGPAC（sigpac-hubcloud.es）。</li>
+<li>Instituto Geográfico Nacional（国家地理研究所）和 Infraestructura de Datos Espaciales de España（西班牙空间数据基础设施），网址为 ign.es 和 idee.es。</li>
+<li>Inventario Español del Patrimonio Natural y de la Biodiversidad（西班牙自然遗产与生物多样性名录），MITECO（iepnb.es），用于查询保护区、传统牧道和公有林。</li>
+<li>Ministerio de Vivienda y Agenda Urbana（住房和城市议程部）的 Sistema de Información Urbana（城市信息系统，mapas.fomento.gob.es），用于查询规划分类。</li>
+<li>欧洲环境署（eea.europa.eu），仅用于西班牙以外的地块。</li>
+<li>UNEP-WCMC 的 Protected Planet（unep-wcmc.org），用于查询西班牙以外的保护区。</li>
+<li>Copernicus 应急管理服务（globalfloods.eu），用于西班牙以外的全球洪水模型。</li>
+<li>Element 84 和 Amazon Web Services，用于获取 Sentinel-2 影像和全球地形数据。</li>
+<li>ISRIC – World Soil Information（isric.org），用于查询土壤类型。</li>
+<li>欧洲环境署（eea.europa.eu），用于查询欧洲的地下水状况。</li>
+<li>Overpass 公共服务器（overpass-api.de 等），提供 OpenStreetMap 数据，用于查询道路和周边设施。</li>
+<li>Esri（arcgis.com），用于地表覆盖，以及在美国查询美国地质调查局（USGS）的公有土地数据。</li>
+<li>Copernicus 的欧洲森林火灾信息系统和全球野火信息系统（effis.emergency.copernicus.eu），用于查询野火。</li>
+<li>欧盟委员会、Eurostat 和 GISCO（ec.europa.eu），用于确定统计区划和查询欧盟其他国家的土地价格。</li>
+<li>OpenStreetMap 和 EOX，用于底图。</li>
+</ul>
+<p>每家服务都适用其自己的隐私政策。Lurra 不会向它们发送您的姓名、邮箱或任何其他关于您的数据，因为 Lurra 根本没有这些数据。</p>
+<p><strong>地点搜索。</strong>如果您在地图的搜索框中输入市镇或地名，这段文字会发送给 OpenStreetMap 的搜索服务 Nominatim。对于西班牙以外的报告，还会向它查询地名，发送的是取整到约一百米的地块中心点。</p>
+<p><strong>语言。</strong>本网站提供多种语言。页面的语言由其网址决定；您浏览器的语言只在您的设备上使用，用于向您提供指向您所用语言版本的链接。各语言的文字都从本网站下载。</p>
+
+<h2>您的设备上保存什么</h2>
+<p>为了避免重复下载约80 MB的数据，每块查询过的土地的卫星植被时间序列会在您浏览器的本地存储中保存30天。如果您把土地加入对比，它们的摘要也会保存在那里。这些数据都不会离开您的设备。您可以随时点击“清空对比”按钮，或在浏览器设置中删除本网站的数据来清除它们。</p>
+
+<h2>您的位置</h2>
+<p>如果您点击“我在现场”，浏览器会请求您允许使用您的位置。坐标在您的设备上用于查找宗地并生成报告，就像您在地图上标出了这个位置一样：查询的是同样的数据服务，Lurra 不会接收或保存这些坐标。</p>
+
+<h2>报告链接</h2>
+<p>“复制报告链接”按钮会生成一个包含地块地籍编号或坐标的网址。收到该链接的人会知道您查询了哪块地。</p>
+
+<div data-si="contador">
+<h2>访问统计</h2>
+<p>本网站使用 GoatCounter 统计访问量，这是一种不使用 Cookie、不识别个人身份的计数器。只记录四种事件（“inicio”“informe”“ejemplo”和“satélite”，即首页、报告、示例和卫星），不记录页面网址，也不记录所查询地块的任何数据。如果用户是从我们的某篇指南进入工具的，还会记录该指南的名称（例如“guia-sigpac”），以便了解哪些指南有用。在非西班牙语页面上，前两种事件还会附带页面的语言代码（例如“informe-fr”）。</p>
+</div>
+
+<h2>地块数据</h2>
+<p>地籍编号标识的是一块宗地，而不是一个人。报告只使用公开信息编制，不包含地籍登记的所有权人姓名或任何其他受保护的数据。</p>
+
+<h2>您的权利</h2>
+<p>由于 Lurra 不保存您的任何数据，因此在它这一方没有需要更正或删除的内容。对于上述服务处理的数据，请直接联系各服务方。<span data-si="email">如果您对本页有疑问，请写信至 <span data-dato="email"></span>。</span>您也可以向 Agencia Española de Protección de Datos（西班牙数据保护局，aepd.es）投诉。</p>
+<p class="tenue">本页译自西班牙语原文，以原文为准。<a href="../../privacidad.html">查看原文</a>。</p>
+</div>
+</main>
+<footer class="pie">
+  <div class="pie__arriba">
+    <div>
+      <a class="marca" href="../../zh-hans.html" aria-label="Lurra 首页"><img src="../../img/icono.svg" alt="" width="32" height="32">Lurra</a>
+      <p class="pie__lema">基于公共数据，为全球任意农村地块免费生成土地报告。仅供参考，不具约束力。</p>
+    </div>
+    <nav aria-label="页脚"><a href="../../zh-hans.html">首页</a> <a href="../../guia/zh-hans/">指南</a> <a href="../../guia/zh-hans/aviso-legal.html">法律声明</a> <a href="../../guia/zh-hans/privacidad.html">隐私</a> <a href="../../guia/zh-hans/condiciones.html">使用条款</a> <a href="../../guia/zh-hans/enlazar.html">链接 Lurra</a> <a href="../../guia/zh-hans/precio-tierra.html">土地价格</a></nav>
+  </div>
+  <nav class="pie__idiomas" aria-label="语言"><strong>语言</strong> <a href="../../" lang="es" hreflang="es">Español</a> <a href="../../ca.html" lang="ca" hreflang="ca">Català</a> <a href="../../eu.html" lang="eu" hreflang="eu">Euskara</a> <a href="../../gl.html" lang="gl" hreflang="gl">Galego</a> <a href="../../en/" lang="en" hreflang="en">English</a> <a href="../../es-419.html" lang="es-419" hreflang="es-419">Español (Latinoamérica)</a> <a href="../../pt-br.html" lang="pt-BR" hreflang="pt-BR">Português (Brasil)</a> <a href="../../pt.html" lang="pt" hreflang="pt">Português (Portugal)</a> <a href="../../fr.html" lang="fr" hreflang="fr">Français</a> <a href="../../de.html" lang="de" hreflang="de">Deutsch</a> <a href="../../it.html" lang="it" hreflang="it">Italiano</a> <a href="../../nl.html" lang="nl" hreflang="nl">Nederlands</a> <a href="../../sv.html" lang="sv" hreflang="sv">Svenska</a> <a href="../../da.html" lang="da" hreflang="da">Dansk</a> <a href="../../nb.html" lang="nb" hreflang="nb">Norsk (bokmål)</a> <a href="../../fi.html" lang="fi" hreflang="fi">Suomi</a> <a href="../../pl.html" lang="pl" hreflang="pl">Polski</a> <a href="../../cs.html" lang="cs" hreflang="cs">Čeština</a> <a href="../../sk.html" lang="sk" hreflang="sk">Slovenčina</a> <a href="../../hu.html" lang="hu" hreflang="hu">Magyar</a> <a href="../../ro.html" lang="ro" hreflang="ro">Română</a> <a href="../../bg.html" lang="bg" hreflang="bg">Български</a> <a href="../../hr.html" lang="hr" hreflang="hr">Hrvatski</a> <a href="../../el.html" lang="el" hreflang="el">Ελληνικά</a> <a href="../../tr.html" lang="tr" hreflang="tr">Türkçe</a> <a href="../../uk.html" lang="uk" hreflang="uk">Українська</a> <a href="../../ru.html" lang="ru" hreflang="ru">Русский</a> <a href="../../ar.html" lang="ar" hreflang="ar">العربية</a> <a href="../../he.html" lang="he" hreflang="he">עברית</a> <a href="../../fa.html" lang="fa" hreflang="fa">فارسی</a> <a href="../../ur.html" lang="ur" hreflang="ur">اردو</a> <a href="../../hi.html" lang="hi" hreflang="hi">हिन्दी</a> <a href="../../bn.html" lang="bn" hreflang="bn">বাংলা</a> <a href="../../id.html" lang="id" hreflang="id">Bahasa Indonesia</a> <a href="../../ms.html" lang="ms" hreflang="ms">Bahasa Melayu</a> <a href="../../fil.html" lang="fil" hreflang="fil">Filipino</a> <a href="../../vi.html" lang="vi" hreflang="vi">Tiếng Việt</a> <a href="../../th.html" lang="th" hreflang="th">ไทย</a> <a href="../../sw.html" lang="sw" hreflang="sw">Kiswahili</a> <a href="../../zh-hans.html" lang="zh-Hans" hreflang="zh-Hans" aria-current="page">简体中文</a> <a href="../../zh-hant.html" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a> <a href="../../ja.html" lang="ja" hreflang="ja">日本語</a> <a href="../../ko.html" lang="ko" hreflang="ko">한국어</a></nav>
+  <p class="pie__traduccion">机器翻译：如有疑问，以<a href="../../en/">英文版</a>为准。</p>
+  <p class="pie__fuentes">基于 Copernicus 计划、Protected Planet（UNEP-WCMC 和世界自然保护联盟）和 OpenStreetMap 的公共数据，在西班牙还使用 Catastro、FEGA（SIGPAC）、MITECO 和 IGN 的数据。上述机构不为这些报告背书，也不对其进行审核。</p>
+</footer>
+<script src="../../web.js"></script>
+</body>
+</html>

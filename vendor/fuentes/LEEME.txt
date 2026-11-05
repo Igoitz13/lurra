@@ -1,0 +1,16 @@
+Tipografías de la web, alojadas aquí para no pedir nada a servidores de terceros.
+
+- Barlow Condensed 600 y 700 (títulos): subconjuntos latino, latino extendido y vietnamita.
+  Paquete @fontsource/barlow-condensed. Licencia SIL Open Font License 1.1 (LICENCIA-BarlowCondensed.txt).
+- Sofia Sans Condensed (variable): las letras cirílicas y griegas de los títulos, que Barlow no tiene.
+  estilo.css la usa con el nombre «Barlow Condensed» solo para esos caracteres (unicode-range).
+  Paquete @fontsource-variable/sofia-sans-condensed. Licencia SIL Open Font License 1.1 (LICENCIA-SofiaSansCondensed.txt).
+- Source Sans 3 (texto; variable, eje de peso): latino, latino extendido, vietnamita, cirílico y griego.
+  Paquete @fontsource-variable/source-sans-3. Licencia SIL Open Font License 1.1 (LICENCIA-SourceSans3.txt).
+- IBM Plex Mono 400 y 500 (referencias, rótulos y cifras técnicas): latino, latino extendido, vietnamita y cirílico.
+  Paquete @fontsource/ibm-plex-mono. Licencia SIL Open Font License 1.1 (LICENCIA-IBMPlexMono.txt).
+
+Cada fichero solo se descarga si la página tiene letras suyas. Árabe, hebreo, persa, urdu, hindi,
+bengalí, tailandés, chino, japonés y coreano usan la letra del sistema del visitante.
+Se usan sin modificar. Si faltan, la web cae a Arial Narrow, a la tipografía del sistema y a la
+monoespaciada del sistema.

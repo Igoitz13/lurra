@@ -1,0 +1,23 @@
+Lurra
+Copyright (c) 2026 Igoitz Mateo Zufiria. Todos los derechos reservados. All rights reserved.
+
+ES · Esta web, su código, sus textos, sus traducciones y su diseño son obra de Igoitz Mateo
+Zufiria. El repositorio es público solo para poder publicar la web; eso no concede ninguna
+licencia. Queda prohibido copiar, modificar, distribuir, publicar o usar este código o su
+contenido, total o parcialmente, sin permiso previo y por escrito del autor. Usar la web
+https://igoitz13.github.io/lurra/ para consultar fincas está permitido y es gratuito.
+
+EN · This website, its source code, texts, translations and design are the work of Igoitz Mateo
+Zufiria. The repository is public only so that the website can be published; this grants no
+licence. Copying, modifying, distributing, publishing or using this code or its content, in whole
+or in part, is not permitted without the author's prior written consent. Using the website
+https://igoitz13.github.io/lurra/ to look up plots is allowed and free of charge.
+
+Contacto / Contact: igoitzmateo@gmail.com
+
+Excepciones / Exceptions:
+- vendor/leaflet: Leaflet, © Volodymyr Agafonkin y colaboradores, licencia BSD-2-Clause.
+- vendor/geotiff: geotiff.js, © EOX IT Services GmbH y colaboradores, licencia MIT.
+- vendor/fuentes: tipografías con su propia licencia (SIL Open Font License), incluida en esa carpeta.
+- Los datos que muestran los informes pertenecen a los organismos que se citan en cada informe
+  y en el aviso legal, y se usan según sus licencias.

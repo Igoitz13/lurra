@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin">
+<title>Privacy · Lurra</title>
+<meta name="description" content="Lurra does not collect personal data: the report is calculated in your browser. Which services are queried and what is stored on your device.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://igoitz13.github.io/lurra/guia/en/privacidad.html">
+<meta name="theme-color" content="#1a1a17">
+<link rel="icon" href="../../img/icono.svg" type="image/svg+xml">
+<link rel="icon" href="../../img/icono-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="../../img/icono-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="../../img/icono-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="../../img/icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../img/icono-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lurra">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Privacy · Lurra">
+<meta property="og:description" content="Lurra does not collect personal data: the report is calculated in your browser. Which services are queried and what is stored on your device.">
+<meta property="og:url" content="https://igoitz13.github.io/lurra/guia/en/privacidad.html">
+<meta property="og:image" content="https://igoitz13.github.io/lurra/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../../img/mapa.svg" as="image" fetchpriority="high">
+<link rel="preload" href="../../vendor/fuentes/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../vendor/fuentes/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../estilo.css">
+<script src="../../config.js"></script>
+</head>
+<body>
+<!-- BORRADOR redactado sin asesoramiento jurídico: revísalo con una gestoría o un abogado antes de cobrar por el servicio. -->
+<a class="salto" href="#contenido">Skip to content</a>
+<header class="cabecera">
+  <a class="marca" href="../../en/" aria-label="Lurra, home"><img src="../../img/icono.svg" alt="" width="32" height="32">Lurra</a>
+  <nav aria-label="Sections">
+    <a href="../../en/#herramienta">Make a report</a>
+    <a href="../../guia/en/">Guides</a>
+  </nav>
+</header>
+<main id="contenido">
+<div class="cima cima--texto">
+  <div class="cima__titulo">
+    <nav class="migas" aria-label="Breadcrumb"><a href="../../en/">Home</a></nav>
+    <h1>Privacy</h1>
+    <p class="entrada">Last updated: November 2026.</p>
+  </div>
+</div>
+<div class="legal">
+<h2>In a nutshell</h2>
+<p>Lurra has no server of its own, no user accounts and no forms that send anything to its author. It uses no cookies and no advertising, and the fonts and icons are hosted on the website itself. The cadastral reference or the plot you look up never reaches Lurra: your browser queries the public data services directly and does the calculations on your device.</p>
+
+<h2>Who sees what</h2>
+<p><strong>The website host.</strong> The pages are served by <span data-dato="alojamiento">a static website hosting provider</span>. Like any web server, it receives your IP address and the technical details of the connection when you download the page. Lurra's author has no access to those logs.</p>
+<p><strong>The data services.</strong> To build the report and draw the maps, your browser connects to the services of these bodies and companies, which receive your IP address and the area or reference you are looking up:</p>
+<ul>
+<li>Dirección General del Catastro (catastro.meh.es).</li>
+<li>Fondo Español de Garantía Agraria, SIGPAC (sigpac-hubcloud.es).</li>
+<li>Instituto Geográfico Nacional and Infraestructura de Datos Espaciales de España (ign.es, idee.es).</li>
+<li>Inventario Español del Patrimonio Natural y de la Biodiversidad, MITECO (iepnb.es), for protected areas, livestock trails and public forests.</li>
+<li>Ministerio de Vivienda y Agenda Urbana, Sistema de Información Urbana (mapas.fomento.gob.es), for the planning classification.</li>
+<li>European Environment Agency (eea.europa.eu), only outside Spain.</li>
+<li>Protected Planet, from UNEP-WCMC (unep-wcmc.org), for protected areas outside Spain.</li>
+<li>Copernicus Emergency Management Service (globalfloods.eu), for the global flood model, outside Spain.</li>
+<li>Element 84 and Amazon Web Services, for the Sentinel-2 images and the global terrain.</li>
+<li>ISRIC – World Soil Information (isric.org), for the soil type.</li>
+<li>European Environment Agency (eea.europa.eu), for groundwater status in Europe.</li>
+<li>Public Overpass servers, which serve OpenStreetMap data (overpass-api.de and others), for access and nearby services.</li>
+<li>Esri (arcgis.com), for land cover and, in the United States, to look up the public lands of the U.S. Geological Survey (USGS).</li>
+<li>Copernicus European and Global Wildfire Information Systems (effis.emergency.copernicus.eu), for wildfires.</li>
+<li>European Commission, Eurostat and GISCO (ec.europa.eu), for the statistical region and the land price in the rest of the European Union.</li>
+<li>OpenStreetMap and EOX, for the base maps.</li>
+</ul>
+<p>Each of them applies its own privacy policy. Lurra does not send them your name, your email address or any other information about you, because it does not have them.</p>
+<p><strong>The place search.</strong> If you type a municipality or a place name into the map's search box, that text is sent to Nominatim, OpenStreetMap's search service. For reports outside Spain, Nominatim is also asked for the name of the place, by sending it the centre of the plot rounded to about a hundred metres.</p>
+<p><strong>Language.</strong> The website is available in several languages. The language of each page is set by its address; your browser's language is only used, on your device, to offer you a link to the version in your language. The texts for each language are downloaded from this same website.</p>
+
+<h2>What is stored on your device</h2>
+<p>To avoid repeating a download of about 80 MB, the satellite vegetation series for each plot you look up is stored for 30 days in your browser's local storage. If you add plots to the comparison, their summary is stored there too. None of this leaves your device. You can delete it whenever you like with the “Clear the comparison” button or from your browser settings, by clearing the data for this site.</p>
+
+<h2>Your location</h2>
+<p>If you press “I'm on the land”, your browser asks for permission to use your location. The coordinates are used on your device to find the parcel and make the report, just as if you had pointed to it on the map: the same data services are queried, and Lurra does not receive or store your coordinates.</p>
+
+<h2>Links to a report</h2>
+<p>The “Copy link to this report” button creates an address that contains the cadastral reference or the coordinates of the plot. Anyone who receives that link will know which plot you looked up.</p>
+
+<div data-si="contador">
+<h2>Visit counting</h2>
+<p>This website counts visits with GoatCounter, a cookie-free counter that does not identify people. Only four events are recorded (“inicio”, “informe”, “ejemplo” and “satélite”, that is, home, report, example and satellite), without the page address and without any data about the plot looked up. If you reach the tool from one of our guides, the name of that guide is also recorded (for example, “guia-sigpac”), so that we know which guides are useful. On pages that are not in Spanish, the first two also carry the code of the page's language (for example, “informe-fr”).</p>
+</div>
+
+<h2>Plot data</h2>
+<p>The cadastral reference identifies a parcel, not a person. The reports are produced solely from public information and do not include the name of the cadastral owner or any other protected data.</p>
+
+<h2>Your rights</h2>
+<p>As Lurra does not keep any of your data, there is nothing on its side to correct or delete. For the data processed by the services listed, contact each of them directly.<span data-si="email"> If you have any questions about this page, write to <span data-dato="email"></span>.</span> You can also lodge a complaint with the Agencia Española de Protección de Datos (the Spanish data protection authority, aepd.es).</p>
+<p class="tenue">This page is a translation of the Spanish original, which prevails. <a href="../../privacidad.html">See the original</a>.</p>
+</div>
+</main>
+<footer class="pie">
+  <div class="pie__arriba">
+    <div>
+      <a class="marca" href="../../en/" aria-label="Lurra, home"><img src="../../img/icono.svg" alt="" width="32" height="32">Lurra</a>
+      <p class="pie__lema">Free land reports for rural plots anywhere in the world, built from public data. Informative and non-binding.</p>
+    </div>
+    <nav aria-label="Footer"><a href="../../en/">Home</a> <a href="../../guia/en/">Guides</a> <a href="../../guia/en/aviso-legal.html">Legal notice</a> <a href="../../guia/en/privacidad.html">Privacy</a> <a href="../../guia/en/condiciones.html">Terms</a> <a href="../../guia/en/enlazar.html">Link to Lurra</a> <a href="../../guia/en/precio-tierra.html">Land prices</a></nav>
+  </div>
+  <nav class="pie__idiomas" aria-label="Languages"><strong>Languages</strong> <a href="../../" lang="es" hreflang="es">Español</a> <a href="../../ca.html" lang="ca" hreflang="ca">Català</a> <a href="../../eu.html" lang="eu" hreflang="eu">Euskara</a> <a href="../../gl.html" lang="gl" hreflang="gl">Galego</a> <a href="../../en/" lang="en" hreflang="en" aria-current="page">English</a> <a href="../../es-419.html" lang="es-419" hreflang="es-419">Español (Latinoamérica)</a> <a href="../../pt-br.html" lang="pt-BR" hreflang="pt-BR">Português (Brasil)</a> <a href="../../pt.html" lang="pt" hreflang="pt">Português (Portugal)</a> <a href="../../fr.html" lang="fr" hreflang="fr">Français</a> <a href="../../de.html" lang="de" hreflang="de">Deutsch</a> <a href="../../it.html" lang="it" hreflang="it">Italiano</a> <a href="../../nl.html" lang="nl" hreflang="nl">Nederlands</a> <a href="../../sv.html" lang="sv" hreflang="sv">Svenska</a> <a href="../../da.html" lang="da" hreflang="da">Dansk</a> <a href="../../nb.html" lang="nb" hreflang="nb">Norsk (bokmål)</a> <a href="../../fi.html" lang="fi" hreflang="fi">Suomi</a> <a href="../../pl.html" lang="pl" hreflang="pl">Polski</a> <a href="../../cs.html" lang="cs" hreflang="cs">Čeština</a> <a href="../../sk.html" lang="sk" hreflang="sk">Slovenčina</a> <a href="../../hu.html" lang="hu" hreflang="hu">Magyar</a> <a href="../../ro.html" lang="ro" hreflang="ro">Română</a> <a href="../../bg.html" lang="bg" hreflang="bg">Български</a> <a href="../../hr.html" lang="hr" hreflang="hr">Hrvatski</a> <a href="../../el.html" lang="el" hreflang="el">Ελληνικά</a> <a href="../../tr.html" lang="tr" hreflang="tr">Türkçe</a> <a href="../../uk.html" lang="uk" hreflang="uk">Українська</a> <a href="../../ru.html" lang="ru" hreflang="ru">Русский</a> <a href="../../ar.html" lang="ar" hreflang="ar">العربية</a> <a href="../../he.html" lang="he" hreflang="he">עברית</a> <a href="../../fa.html" lang="fa" hreflang="fa">فارسی</a> <a href="../../ur.html" lang="ur" hreflang="ur">اردو</a> <a href="../../hi.html" lang="hi" hreflang="hi">हिन्दी</a> <a href="../../bn.html" lang="bn" hreflang="bn">বাংলা</a> <a href="../../id.html" lang="id" hreflang="id">Bahasa Indonesia</a> <a href="../../ms.html" lang="ms" hreflang="ms">Bahasa Melayu</a> <a href="../../fil.html" lang="fil" hreflang="fil">Filipino</a> <a href="../../vi.html" lang="vi" hreflang="vi">Tiếng Việt</a> <a href="../../th.html" lang="th" hreflang="th">ไทย</a> <a href="../../sw.html" lang="sw" hreflang="sw">Kiswahili</a> <a href="../../zh-hans.html" lang="zh-Hans" hreflang="zh-Hans">简体中文</a> <a href="../../zh-hant.html" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a> <a href="../../ja.html" lang="ja" hreflang="ja">日本語</a> <a href="../../ko.html" lang="ko" hreflang="ko">한국어</a></nav>
+  <p class="pie__fuentes">Built from public data of the Copernicus programme, Protected Planet (UNEP-WCMC and IUCN) and OpenStreetMap and, in Spain, of the Catastro, FEGA (SIGPAC), MITECO and IGN. Those bodies neither endorse nor review the reports.</p>
+</footer>
+<script src="../../web.js"></script>
+</body>
+</html>

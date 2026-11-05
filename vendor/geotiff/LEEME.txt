@@ -1,0 +1,9 @@
+geotiff.js 2.1.3 (https://github.com/geotiffjs/geotiff.js, licencia MIT), compilacion para navegador,
+con UN cambio hecho a mano el 12-10-2026:
+
+La espera de cero milisegundos con la que agrupa las peticiones (funcion `wait`, que usaba setTimeout)
+usa ahora MessageChannel. Motivo: los navegadores frenan setTimeout en las pestanas que no estan a la
+vista (una llamada por segundo, o por minuto), y la lectura de las imagenes de satelite se quedaba casi
+parada en cuanto el visitante cambiaba de pestana. Comprobado en Chrome con la web ya publicada.
+
+Si se actualiza geotiff.js hay que repetir el cambio: buscar `setTimeout` en el fichero (solo aparece una vez).
