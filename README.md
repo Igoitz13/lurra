@@ -28,6 +28,7 @@ Es una web estática: no hay servidor ni base de datos. El navegador de quien la
 - [Qué comprobar antes de comprar una finca rústica](https://igoitz13.github.io/lurra/guia/comprar-finca-rustica.html)
 - [¿Se puede construir en una finca rústica?](https://igoitz13.github.io/lurra/guia/construir-en-suelo-rustico.html)
 - [Cómo saber si una finca es inundable](https://igoitz13.github.io/lurra/guia/finca-inundable.html)
+- [Precio de la hectárea por comunidad autónoma](https://igoitz13.github.io/lurra/guia/precio-hectarea-andalucia.html)
 - [Todas las guías](https://igoitz13.github.io/lurra/guia/)
 - Buying rural land in Spain: [English](https://igoitz13.github.io/lurra/guias/en/buying-rural-land-in-spain.html) · [Deutsch](https://igoitz13.github.io/lurra/guias/de/grundstueck-kaufen-spanien.html) · [Français](https://igoitz13.github.io/lurra/guias/fr/acheter-terrain-espagne.html) · [Nederlands](https://igoitz13.github.io/lurra/guias/nl/grond-kopen-spanje.html)
 
